@@ -10,7 +10,21 @@ export default function Home() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('レース名：', raceName, '馬の名前：', horseName, '予想順位：', rank);
+    const prediction = {
+      id: Date.now(),
+      receName: raceName,
+      horseName: horseName,
+      rank: rank
+    }
+
+    const saved = localStorage.getItem('predictions'); // ローカルストレージからキー名のデータを取得
+    const predictions = saved ? JSON.parse(saved) : []; // 予想がすでにローカルストレージにあれば、空のデータを。新しければsavedのデータを
+
+    predictions.push(prediction) // 予想をデータに入れる
+
+    
+    localStorage.setItem('predictions', JSON.stringify(predictions));
+    alert("予想を保存しました")
   };
 
   return (
