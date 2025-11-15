@@ -20,7 +20,7 @@ export default function Home() {
     e.preventDefault();
     const prediction = {
       id: Date.now(),
-      receName: raceName,
+      raceName: raceName,
       horseName: horseName,
       rank: rank,
     };
@@ -44,8 +44,9 @@ export default function Home() {
     <div className='max-w-2xl mx-auto p-6'>
       <div className="p-6 rounded-3xl bg-amber-50 border-2 border-amber-100">
         <h1 className='text-3xl font-bold mb-6 text-center border-b-amber-400 border-b-2 pb-2'>競馬予想メモ</h1>
+
         {/* 入力フォーム */}
-        <div className='bg-gray-100 p-6 rounded-xl border-gray-200 border-2 mb-4 drop-shadow-xl'>
+        <div className='bg-gray-100 p-6 rounded-xl border-gray-200 border-2 mb-6 drop-shadow-xl'>
           <form onSubmit={handleSubmit}>
             <h2 className='text-2xl pl-2 border-l-4 border-l-amber-500 mb-4 font-bold'>登録フォーム</h2>
             <ul className='flex gap-2 mb-4'>
@@ -65,11 +66,13 @@ export default function Home() {
             <button type='submit' className='text-center block w-[25%] bg-green-200 rounded-xl py-2 text-green-900 font-bold transition-colors ease duration-200 hover:bg-green-900 hover:text-green-200'>登録</button>
           </form>
         </div>
+
+        {/* 予想一覧 */}
         <div>
           <h2 className='text-2xl pl-2 border-l-4 border-l-amber-500 mb-4 font-bold'>予想一覧</h2>
           <div className="flex flex-col gap-2">
             {predictions.map((prediction) => (
-              <div key={prediction.id} className='border-2 bg-amber-50 border-amber-100 rounded-xl flex flex-col p-2 gap-1'>
+              <div key={prediction.id} className='border-2 bg-amber-50 border-amber-200 rounded-xl flex flex-col p-2 gap-1'>
                 <h3 className='font-semibold'>レース名：<span className='font-normal'>{prediction.raceName}</span></h3>
                 <p className='font-semibold'>馬名：<span className='font-normal'>{prediction.horseName}</span></p>
                 <p className='font-semibold'>順位：<span className='font-normal'>{prediction.rank}</span></p>
@@ -77,6 +80,7 @@ export default function Home() {
             ))}
           </div>
         </div>
+
       </div>
     </div>
   );
