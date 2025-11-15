@@ -18,19 +18,18 @@ export default function Home() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
     const prediction = {
       id: Date.now(),
       raceName: raceName,
       horseName: horseName,
       rank: rank,
     };
+
     const saved = localStorage.getItem('predictions'); // ローカルストレージからキー名のデータを取得
     const predictions = saved ? JSON.parse(saved) : []; // 予想がすでにローカルストレージにあれば、空のデータを。新しければsavedのデータを
-
     predictions.push(prediction); // 予想をデータに入れる
-
-    localStorage.setItem('predictions', JSON.stringify(predictions));
-
+    localStorage.setItem('predictions', JSON.stringify(predictions)); // ローカルストレージに文字列でpredictionsを入れる
     setPredictions(predictions);
 
     setRaceName('');
@@ -51,15 +50,15 @@ export default function Home() {
             <h2 className='text-2xl pl-2 border-l-4 border-l-amber-500 mb-4 font-bold'>登録フォーム</h2>
             <ul className='flex gap-2 mb-4'>
               <li>
-                <label className='block mb-2 font-bold'>レース名：</label>
+                <label className='block mb-2 font-bold'>レース名</label>
                 <input value={raceName} onChange={(e) => setRaceName(e.target.value)} type='text' className='focus:border-gray-500 w-full p-2 border-gray-300 border-2 rounded-xl' />
               </li>
               <li>
-                <label className='block mb-2 font-bold'>馬の名前：</label>
+                <label className='block mb-2 font-bold'>馬の名前</label>
                 <input value={horseName} onChange={(e) => setHorseName(e.target.value)} type='text' className='focus:border-gray-500 w-full p-2 border-gray-300 border-2 rounded-xl' />
               </li>
               <li>
-                <label className='block mb-2 font-bold'>予想順位：</label>
+                <label className='block mb-2 font-bold'>予想順位</label>
                 <input value={rank} onChange={(e) => setRank(e.target.value)} type='text' className='focus:border-gray-500 w-full p-2 border-gray-300 border-2 rounded-xl' />
               </li>
             </ul>
