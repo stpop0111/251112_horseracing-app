@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 
 import PredictionsForm from './components/PredictionsForm';
 import PredictionCard from './components/PredictionCard';
+import Button from './components/common/Button';
 
 export default function Home() {
   const [predictions, setPredictions] = useState([]); // 予想一覧
@@ -138,31 +139,9 @@ export default function Home() {
               editingID={editingID}
             />
             <div className='flex gap-2'>
-              <button
-                type='submit'
-                className={`
-                  cursor-pointer text-center block w-[25%] font-bold transition-colors ease duration-200 rounded-xl py-2 ${
-                    editingID
-                      ? 'bg-orange-200 text-orange-900 hover:bg-orange-900 hover:text-orange-200'
-                      : 'bg-green-200 text-green-900 hover:bg-green-900 hover:text-green-200'
-                  }`}
-              >
-                {editingID ? `編集` : `登録`}
-              </button>
-              {editingID && (
-                <button
-                  type='button'
-                  onClick={() => {
-                    setEditingID('');
-                    setRaceName('');
-                    setHorseName('');
-                    setRank('');
-                  }}
-                  className='cursor-pointer text-center block w-[25%] font-bold transition-colors ease rounded-xl py-2  bg-gray-200 text-gray-900 hover:bg-gray-900 hover:text-gray-200 duration-200'
-                >
-                  キャンセル
-                </button>
-              )}
+              <Button variant='green' size='sml' type='submit' onClick={handleSubmit}>
+                登録
+              </Button>
             </div>
           </form>
         </div>
@@ -210,7 +189,11 @@ export default function Home() {
                   handleDelete(p.id);
                 }}
                 onCancelEdit={() => {
-                  setEditingID('');
+                  setEditingID('')
+                  setRaceName('');
+                  setHorseName('');
+                  setRank('');
+                  ;
                 }}
                 handleSubmit={handleSubmit}
               />

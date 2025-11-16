@@ -1,9 +1,10 @@
 import PredictionsForm from './PredictionsForm';
+import Button from './common/Button';
 
-export default function PredictionCard({ 
-  prediction, 
-  editingID, 
-  onEdit, 
+export default function PredictionCard({
+  prediction,
+  editingID,
+  onEdit,
   onDelete,
   onCancelEdit,
   handleSubmit,
@@ -13,7 +14,7 @@ export default function PredictionCard({
   setHorseName,
   rank,
   setRank,
-  }) {
+}) {
   return (
     <div key={prediction.id} className='border-2 bg-amber-50 border-amber-200 rounded-xl p-4'>
       <div className='flex justify-between'>
@@ -28,19 +29,10 @@ export default function PredictionCard({
             順位：<span className='font-normal'>{prediction.rank}</span>
           </p>
         </div>
-        <div className='flex gap-2 w-[30%]'>
-          {editingID === prediction.id ? (
-            <button className='block w-full rounded-lg py-2 font-bold bg-gray-900 text-gray-200'>編集中</button>
-          ) : (
-            <button
-              onClick={() => {
-                onEdit(prediction);
-              }}
-              className='block w-full cursor-pointer bg-gray-200 text-gray-900 rounded-lg py-2 font-bold hover:bg-gray-900 hover:text-gray-200 duration-200'
-            >
-              編集モード
-            </button>
-          )}
+        <div className='flex w-[30%]'>
+          <Button variant='gray' size='full' onClick={() => onEdit(prediction)}>
+            編集モード
+          </Button>
         </div>
       </div>
       <hr className='my-4 border-0.5 border-amber-400' />
@@ -70,21 +62,12 @@ export default function PredictionCard({
                   editingID={editingID}
                 />
                 <div className='flex gap-2 w-full mb-6'>
-                  <button
-                    type='submit'
-                    className='block w-full cursor-pointer bg-orange-200 text-orange-900 rounded-lg py-4 font-bold hover:bg-orange-900 hover:text-orange-200 duration-200'
-                  >
-                    編集
-                  </button>
-                  <button
-                    type='button'
-                    onClick={() => {
-                      onDelete(prediction);
-                    }}
-                    className='block w-full cursor-pointer bg-red-200 text-red-900 rounded-lg py-4 font-bold hover:bg-red-900 hover:text-red-200 duration-200'
-                  >
+                  <Button variant='orange' size='full' type={'submit'}>
+                    編集モード
+                  </Button>
+                  <Button variant='red' size='full' onClick={() => {onDelete(prediction)}} className='py-4'>
                     削除
-                  </button>
+                  </Button>
                 </div>
               </form>
             )}
