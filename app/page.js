@@ -79,7 +79,7 @@ export default function Home() {
   /* ------------------------------------ */
 
   return (
-    <div className='max-w-2xl mx-auto p-6'>
+    <div className='max-w-2xl p-6'>
       <div className='p-6 rounded-3xl bg-amber-50 border-2 border-amber-100'>
         <h1 className='text-3xl font-bold mb-6 text-center border-b-amber-400 border-b-2 pb-2'>競馬予想メモ</h1>
 
@@ -101,8 +101,8 @@ export default function Home() {
                   value={raceName}
                   onChange={(e) => setRaceName(e.target.value)}
                   type='text'
-                  className={`focus:border-gray-500 w-full p-2 border-2 rounded-xl ${
-                    editingID ? 'border-amber-500' : 'border-green-500'
+                  className={`w-full p-2 border-2 rounded-xl outline-none ${
+                    editingID ? 'border-amber-500 focus:border-amber-700' : 'border-green-500 focus:border-green-700'
                   }`}
                 />
               </li>
@@ -112,8 +112,8 @@ export default function Home() {
                   value={horseName}
                   onChange={(e) => setHorseName(e.target.value)}
                   type='text'
-                  className={`focus:border-gray-500 w-full p-2 border-2 rounded-xl ${
-                    editingID ? 'border-amber-500' : 'border-green-500'
+                  className={`w-full p-2 border-2 rounded-xl outline-none ${
+                    editingID ? 'border-amber-500 focus:border-amber-700' : 'border-green-500 focus:border-green-700'
                   }`}
                 />
               </li>
@@ -123,8 +123,8 @@ export default function Home() {
                   value={rank}
                   onChange={(e) => setRank(e.target.value)}
                   type='text'
-                  className={`focus:border-gray-500 w-full p-2 border-2 rounded-xl ${
-                    editingID ? 'border-amber-500' : 'border-green-500'
+                  className={`w-full p-2 border-2 rounded-xl outline-none ${
+                    editingID ? 'border-amber-500 focus:border-amber-700' : 'border-green-500 focus:border-green-700'
                   }`}
                 />
               </li>
@@ -151,7 +151,7 @@ export default function Home() {
             {predictions.map((p) => (
               <div 
                 key={p.id}
-                className='border-2 bg-amber-50 border-amber-200 rounded-xl p-2'
+                className='border-2 bg-amber-50 border-amber-200 rounded-xl p-4'
               >
                 <div className='flex justify-between'>
                   <div className='flex flex-col gap-1'>
@@ -172,7 +172,7 @@ export default function Home() {
                       setHorseName(p.horseName);
                       setRank(p.rank);
                     }}
-                    className='cursor-pointer bg-orange-200 text-orange-900 rounded-xl w-[20%] py-2 font-bold hover:bg-orange-900 hover:text-orange-200 duration-200'
+                    className='cursor-pointer bg-orange-200 text-orange-900 rounded-lg w-[20%] py-2 font-bold hover:bg-orange-900 hover:text-orange-200 duration-200'
                   >
                     編集
                   </button>
