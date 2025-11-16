@@ -110,7 +110,8 @@ export default function Home() {
       <div className='py-6 rounded-3xl bg-amber-50 border-2 border-amber-100'>
         <h1 className='text-3xl font-bold mb-6 text-center border-b-amber-400 border-b-2 pb-2'>競馬予想メモ</h1>
 
-        {/* 入力フォーム */}
+        {/* 入力フォーム
+        ------------------------------*/}
         <div className='px-6'>
           <form onSubmit={handleSubmit} className='bg-gray-100 p-6 rounded-xl border-gray-200 border-2 mb-6 drop-shadow-lg'>
             <h2
@@ -185,10 +186,11 @@ export default function Home() {
           </form>
         </div>
 
-        {/* 予想一覧 */}
+        {/* 予想一覧
+        ------------------------------*/}
         <div className='px-6'>
           <div className='mb-4 flex justify-between'>
-            <h2 className='text-2xl pl-2 border-l-4 border-l-amber-200 font-bold'>予想一覧</h2>
+            <h2 className='text-2xl pl-2 border-l-4 border-l-amber-200 font-bold'>予想一覧</h2>/
             {predictions.length !== 0 && (
               <button
                 onClick={() => {
@@ -204,6 +206,7 @@ export default function Home() {
           </div>
           <div className='flex flex-col gap-2 max-h-[400px] overflow-y-auto'>
             {predictions.length === 0 && <p className='text-gray-800 text-lg'>予想がありません</p>}
+            ,m
             {/* 各カード */}
             {predictions.map((p) => (
               <div key={p.id} className='border-2 bg-amber-50 border-amber-200 rounded-xl p-4'>
@@ -245,7 +248,8 @@ export default function Home() {
                   {p.editedAt && <p className='text-gray-800 text-sm'>最終更新日：{p.editedAt}</p>}
                 </div>
 
-                {/* 編集モーダルの表示 */}
+                {/* 編集モーダルの表示 
+                  ------------------------------*/}
                 {editingID === p.id && (
                   <div
                     className='h-screen w-screen fixed top-0 left-0 flex justify-center items-center bg-black/30'
