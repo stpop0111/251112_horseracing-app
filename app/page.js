@@ -142,6 +142,18 @@ export default function Home() {
               <Button variant='green' size='sml' type='submit' onClick={handleSubmit}>
                 登録
               </Button>
+              <Button
+                variant='gray'
+                size='sml'
+                onClick={() => {
+                  setEditingID('');
+                  setRaceName('');
+                  setHorseName('');
+                  setRank('');
+                }}
+              >
+                リセット
+              </Button>
             </div>
           </form>
         </div>
@@ -152,16 +164,18 @@ export default function Home() {
           <div className='mb-4 flex justify-between'>
             <h2 className='text-2xl pl-2 border-l-4 border-l-amber-200 font-bold'>予想一覧</h2>
             {predictions.length !== 0 && (
-              <button
-                onClick={() => {
+              <Button
+                variant='red'
+                size='sml'
+                onClick={() =>{
                   if (!confirm('すべての予想を削除しますか？')) return;
                   localStorage.removeItem('predictions');
                   setPredictions([]);
                 }}
-                className='cursor-pointer'
               >
-                すべての予想を削除する
-              </button>
+                すべて削除
+              </Button>
+              
             )}
           </div>
           <div className='flex flex-col gap-2 max-h-[400px] overflow-y-auto'>
@@ -189,11 +203,10 @@ export default function Home() {
                   handleDelete(p.id);
                 }}
                 onCancelEdit={() => {
-                  setEditingID('')
+                  setEditingID('');
                   setRaceName('');
                   setHorseName('');
                   setRank('');
-                  ;
                 }}
                 handleSubmit={handleSubmit}
               />

@@ -65,20 +65,28 @@ export default function PredictionCard({
                   <Button variant='orange' size='full' type={'submit'}>
                     編集モード
                   </Button>
-                  <Button variant='red' size='full' onClick={() => {onDelete(prediction)}} className='py-4'>
+                  <Button
+                    variant='red'
+                    size='full'
+                    onClick={() => {
+                      onDelete(prediction);
+                    }}
+                    className='py-4'
+                  >
                     削除
                   </Button>
                 </div>
               </form>
             )}
 
-            <button
-              type='button'
+            <Button
+              variant='gray'
+              size='full'
               onClick={onCancelEdit}
-              className='block w-full cursor-pointer bg-gray-200 text-gray-900 rounded-full py-4 font-bold hover:bg-gray-900 hover:text-gray-200 duration-200'
+              className='py-4'
             >
               キャンセル
-            </button>
+            </Button>
           </div>
         </div>
       )}
