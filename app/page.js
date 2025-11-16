@@ -190,6 +190,7 @@ export default function Home() {
             {/* 各カード */}
             {predictions.map((p) => (
               <PredictionCard
+                key={p.id}
                 raceName={raceName} // ← 追加
                 setRaceName={setRaceName} // ← 追加
                 horseName={horseName} // ← 追加
@@ -206,7 +207,7 @@ export default function Home() {
                   setRank(p.rank);
                 }}
                 onDelete={() => {
-                  handleDelete(p);
+                  handleDelete(p.id);
                 }}
                 onCancelEdit={() => {
                   setEditingID('');

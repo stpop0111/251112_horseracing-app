@@ -6,7 +6,13 @@ export default function PredictionCard({
   onEdit, 
   onDelete,
   onCancelEdit,
-  handleSubmit
+  handleSubmit,
+  raceName,
+  setRaceName,
+  horseName,
+  setHorseName,
+  rank,
+  setRank,
   }) {
   return (
     <div key={prediction.id} className='border-2 bg-amber-50 border-amber-200 rounded-xl p-4'>
