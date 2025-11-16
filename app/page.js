@@ -3,6 +3,9 @@
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
+import PredictionsForm from './components/PredictionsForm';
+import PredictionCard from './components/PredictionCard';
+
 export default function Home() {
   const [predictions, setPredictions] = useState([]); // 予想一覧
   const [raceName, setRaceName] = useState(''); // レース名
@@ -113,7 +116,10 @@ export default function Home() {
         {/* 入力フォーム
         ------------------------------*/}
         <div className='px-6'>
-          <form onSubmit={handleSubmit} className='bg-gray-100 p-6 rounded-xl border-gray-200 border-2 mb-6 drop-shadow-lg'>
+          <form
+            onSubmit={handleSubmit}
+            className='bg-gray-100 p-6 rounded-xl border-gray-200 border-2 mb-6 drop-shadow-lg'
+          >
             <h2
               className={`text-2xl pl-2 border-l-4 mb-4 font-bold ${
                 editingID ? 'border-l-amber-500' : 'border-l-green-500'
@@ -121,41 +127,16 @@ export default function Home() {
             >
               {editingID ? '編集フォーム' : '登録フォーム'}
             </h2>
-            <ul className='flex gap-2 mb-4'>
-              <li>
-                <label className='block mb-2 font-bold'>レース名</label>
-                <input
-                  value={raceName}
-                  onChange={(e) => setRaceName(e.target.value)}
-                  type='text'
-                  className={`w-full p-2 border-2 rounded-xl outline-none ${
-                    editingID ? 'border-amber-500 focus:border-amber-700' : 'border-green-500 focus:border-green-700'
-                  }`}
-                />
-              </li>
-              <li>
-                <label className='block mb-2 font-bold'>馬の名前</label>
-                <input
-                  value={horseName}
-                  onChange={(e) => setHorseName(e.target.value)}
-                  type='text'
-                  className={`w-full p-2 border-2 rounded-xl outline-none ${
-                    editingID ? 'border-amber-500 focus:border-amber-700' : 'border-green-500 focus:border-green-700'
-                  }`}
-                />
-              </li>
-              <li>
-                <label className='block mb-2 font-bold'>予想順位</label>
-                <input
-                  value={rank}
-                  onChange={(e) => setRank(e.target.value)}
-                  type='text'
-                  className={`w-full p-2 border-2 rounded-xl outline-none ${
-                    editingID ? 'border-amber-500 focus:border-amber-700' : 'border-green-500 focus:border-green-700'
-                  }`}
-                />
-              </li>
-            </ul>
+            <PredictionsForm
+              raceName={raceName}
+              setRaceName={setRaceName}
+              horseName={horseName}
+              setHorseName={setHorseName}
+              rank={rank}
+              setRank={setRank}
+              handleSubmit={handleSubmit}
+              editingID={editingID}
+            />
             <div className='flex gap-2'>
               <button
                 type='submit'
@@ -190,7 +171,7 @@ export default function Home() {
         ------------------------------*/}
         <div className='px-6'>
           <div className='mb-4 flex justify-between'>
-            <h2 className='text-2xl pl-2 border-l-4 border-l-amber-200 font-bold'>予想一覧</h2>/
+            <h2 className='text-2xl pl-2 border-l-4 border-l-amber-200 font-bold'>予想一覧</h2>
             {predictions.length !== 0 && (
               <button
                 onClick={() => {
@@ -206,124 +187,32 @@ export default function Home() {
           </div>
           <div className='flex flex-col gap-2 max-h-[400px] overflow-y-auto'>
             {predictions.length === 0 && <p className='text-gray-800 text-lg'>予想がありません</p>}
-            ,m
             {/* 各カード */}
             {predictions.map((p) => (
-              <div key={p.id} className='border-2 bg-amber-50 border-amber-200 rounded-xl p-4'>
-                <div className='flex justify-between'>
-                  <div className='flex flex-col gap-1'>
-                    <h3 className='font-semibold'>
-                      レース名：<span className='font-normal'>{p.raceName}</span>
-                    </h3>
-                    <p className='font-semibold'>
-                      馬名：<span className='font-normal'>{p.horseName}</span>
-                    </p>
-                    <p className='font-semibold'>
-                      順位：<span className='font-normal'>{p.rank}</span>
-                    </p>
-                  </div>
-                  <div className='flex gap-2 w-[30%]'>
-                    {editingID === p.id ? (
-                      <button className='block w-full rounded-lg py-2 font-bold bg-gray-900 text-gray-200'>
-                        編集中
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => {
-                          setEditingID(p.id);
-                          setRaceName(p.raceName);
-                          setHorseName(p.horseName);
-                          setRank(p.rank);
-                        }}
-                        className='block w-full cursor-pointer bg-gray-200 text-gray-900 rounded-lg py-2 font-bold hover:bg-gray-900 hover:text-gray-200 duration-200'
-                      >
-                        編集モード
-                      </button>
-                    )}
-                  </div>
-                </div>
-                <hr className='my-4 border-0.5 border-amber-400' />
-                <div>
-                  <p className='text-gray-800 text-sm'>作成日：{p.createdAt}</p>
-                  {p.editedAt && <p className='text-gray-800 text-sm'>最終更新日：{p.editedAt}</p>}
-                </div>
-
-                {/* 編集モーダルの表示 
-                  ------------------------------*/}
-                {editingID === p.id && (
-                  <div
-                    className='h-screen w-screen fixed top-0 left-0 flex justify-center items-center bg-black/30'
-                    onClick={() => {
-                      setEditingID('');
-                      setRaceName('');
-                      setHorseName('');
-                      setRank('');
-                    }}
-                  >
-                    <div className='bg-white w-xl p-6 rounded-xl' onClick={(e) => e.stopPropagation()}>
-                      {editingID === p.id && (
-                        <form onSubmit={handleSubmit}>
-                          <h2 className='text-xl mb-2 font-bold'>編集する予想</h2>
-                          <ul className='flex gap-2 mb-4'>
-                            <li>
-                              <label className='block mb-2 font-bold'>レース名</label>
-                              <input
-                                value={raceName}
-                                onChange={(e) => setRaceName(e.target.value)}
-                                type='text'
-                                className='w-full p-2 border-2 rounded-xl outline-none border-amber-500 focus:border-amber-700'
-                              />
-                            </li>
-                            <li>
-                              <label className='block mb-2 font-bold'>馬の名前</label>
-                              <input
-                                value={horseName}
-                                onChange={(e) => setHorseName(e.target.value)}
-                                type='text'
-                                className='w-full p-2 border-2 rounded-xl outline-none border-amber-500 focus:border-amber-700'
-                              />
-                            </li>
-                            <li>
-                              <label className='block mb-2 font-bold'>予想順位</label>
-                              <input
-                                value={rank}
-                                onChange={(e) => setRank(e.target.value)}
-                                type='text'
-                                className='w-full p-2 border-2 rounded-xl outline-none border-amber-500 focus:border-amber-700'
-                              />
-                            </li>
-                          </ul>
-                          <div className='flex gap-2 w-full mb-6'>
-                            <button
-                              type='submit'
-                              className='block w-full cursor-pointer bg-orange-200 text-orange-900 rounded-lg py-4 font-bold hover:bg-orange-900 hover:text-orange-200 duration-200'
-                            >
-                              編集
-                            </button>
-                            <button
-                              type='button'
-                              onClick={() => {
-                                handleDelete(p.id);
-                              }}
-                              className='block w-full cursor-pointer bg-red-200 text-red-900 rounded-lg py-4 font-bold hover:bg-red-900 hover:text-red-200 duration-200'
-                            >
-                              削除
-                            </button>
-                          </div>
-                        </form>
-                      )}
-
-                      <button
-                        type='button'
-                        onClick={() => setEditingID('')}
-                        className='block w-full cursor-pointer bg-gray-200 text-gray-900 rounded-full py-4 font-bold hover:bg-gray-900 hover:text-gray-200 duration-200'
-                      >
-                        キャンセル
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
+              <PredictionCard
+                raceName={raceName} // ← 追加
+                setRaceName={setRaceName} // ← 追加
+                horseName={horseName} // ← 追加
+                setHorseName={setHorseName} // ← 追加
+                rank={rank} // ← 追加
+                setRank={setRank} // ← 追加
+                id={p.id}
+                prediction={p}
+                editingID={editingID}
+                onEdit={() => {
+                  setEditingID(p.id);
+                  setRaceName(p.raceName);
+                  setHorseName(p.horseName);
+                  setRank(p.rank);
+                }}
+                onDelete={() => {
+                  handleDelete(p);
+                }}
+                onCancelEdit={() => {
+                  setEditingID('');
+                }}
+                handleSubmit={handleSubmit}
+              />
             ))}
           </div>
         </div>
