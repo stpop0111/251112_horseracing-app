@@ -1,7 +1,7 @@
 'use client';
 
-import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
 
 import PredictionsForm from './components/PredictionsForm';
 import PredictionCard from './components/PredictionCard';
@@ -22,6 +22,12 @@ export default function Home() {
       console.log(predictions);
     }
   }, []);
+
+  // 予想追加時のポップアニメーション
+  useEffect(() => {
+    
+
+  },[predictions.length])
 
   /* ------------------------------------
     登録関数
