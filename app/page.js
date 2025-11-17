@@ -14,21 +14,6 @@ export default function Home() {
   const [rank, setRank] = useState(''); // 順位
   const [editingID, setEditingID] = useState(''); // 編集中のID
 
-  // 初回ロード時にローカルストレージからデータを取得し、オブジェクトに格納
-  useEffect(() => {
-    const saved = localStorage.getItem('predictions'); // ローカルストレージからキー名のデータを取得
-    if (saved) {
-      setPredictions(JSON.parse(saved));
-      console.log(predictions);
-    }
-  }, []);
-
-  // 予想追加時のポップアニメーション
-  useEffect(() => {
-    
-
-  },[predictions.length])
-
   /* ------------------------------------
     登録関数
   ------------------------------------ */
@@ -56,6 +41,7 @@ export default function Home() {
         rank: rank,
         createdAt: generateID('-', ':', ' '),
         editedAt: '',
+        isNew: true,
       };
       predictions.push(prediction); // 予想をデータに入れる
       localStorage.setItem('predictions', JSON.stringify(predictions)); // ローカルストレージに文字列でpredictionsを入れる
@@ -114,6 +100,15 @@ export default function Home() {
 
     return `${year}${dateSep}${month}${dateSep}${day}${sep}${hours}${timeSep}${mins}${timeSep}${secs}`;
   };
+
+  // 初回ロード時にローカルストレージからデータを取得し、オブジェクトに格納
+  useEffect(() => {
+    const saved = localStorage.getItem('predictions'); // ローカルストレージからキー名のデータを取得
+    if (saved) {
+      setPredictions(JSON.parse(saved));
+      console.log(predictions);
+    }
+  }, []);
 
   return (
     <div className='max-w-2xl p-6'>
@@ -187,15 +182,15 @@ export default function Home() {
           <div className='flex flex-col gap-2 max-h-[400px] overflow-y-auto'>
             {predictions.length === 0 && <p className='text-gray-800 text-lg'>予想がありません</p>}
             {/* 各カード */}
-            {predictions.map((p) => (
+            {predictions.slice().reverse().map((p) => (
               <PredictionCard
                 key={p.id}
-                raceName={raceName} // ← 追加
-                setRaceName={setRaceName} // ← 追加
-                horseName={horseName} // ← 追加
-                setHorseName={setHorseName} // ← 追加
-                rank={rank} // ← 追加
-                setRank={setRank} // ← 追加
+                raceName={raceName}
+                setRaceName={setRaceName}
+                horseName={horseName}
+                setHorseName={setHorseName}
+                rank={rank}
+                setRank={setRank}
                 id={p.id}
                 prediction={p}
                 editingID={editingID}
