@@ -62,8 +62,8 @@ export default function PredictionCard({
   },[editingID, prediction.id]);
 
   return (
-    <div key={prediction.id} className='border-2 bg-amber-50 border-amber-200 rounded-xl p-4'>
-      <div ref={cardRef}>
+    <div key={prediction.id}>
+      <div className='border-2 bg-amber-50 border-amber-200 rounded-xl p-4' ref={cardRef}>
         <div className='flex justify-between'>
           <div className='flex flex-col gap-1'>
             <h3 className='font-semibold'>
