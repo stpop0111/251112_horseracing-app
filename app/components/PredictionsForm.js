@@ -1,3 +1,8 @@
+'use client';
+
+import gsap from "gsap";
+import { useEffect, useRef } from "react";
+
 export default function PredictionsForm({
   raceName,
   setRaceName,
@@ -6,10 +11,28 @@ export default function PredictionsForm({
   rank,
   setRank,
   editingID,
-}) {
+}) 
+{
+  // 入力欄のアニメーション
+  const formContainer = useRef(null);
+  
+  useEffect(() => {
+    const formItem = formContainer.current.querySelectorAll('li');
+    gsap.fromTo(formItem, {
+      opacity:0,
+      y: 30
+    },{
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      stagger: 0.2,
+      ease: "power4.out"
+    })
+  },[])
+
   return (
-    <ul className='flex gap-2 mb-4'>
-      <li>
+    <ul className='flex gap-2 mb-4' ref={formContainer}>
+      <li> 
         <label className='block mb-2 font-bold'>レース名</label>
         <input
           value={raceName}

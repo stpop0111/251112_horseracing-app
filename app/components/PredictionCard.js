@@ -1,3 +1,5 @@
+'use client';
+
 import PredictionsForm from './PredictionsForm';
 import Button from './common/Button';
 
@@ -31,10 +33,7 @@ export default function PredictionCard({
         {
           x: 0,
           duration: 1.6,
-          ease: "elastic.out(1,0.3)",
-          onComplete: () => {
-            prediction.isNew = false
-          }
+          ease: "elastic.out(1,0.3)"
         }
       );
     }

@@ -106,7 +106,6 @@ export default function Home() {
     const saved = localStorage.getItem('predictions'); // ローカルストレージからキー名のデータを取得
     if (saved) {
       setPredictions(JSON.parse(saved));
-      console.log(predictions);
     }
   }, []);
 
@@ -179,7 +178,7 @@ export default function Home() {
               
             )}
           </div>
-          <div className='flex flex-col gap-2 max-h-[400px] overflow-y-auto'>
+          <div className='flex flex-col gap-2 max-h-[400px] overflow-y-auto overflow-x-hidden'>
             {predictions.length === 0 && <p className='text-gray-800 text-lg'>予想がありません</p>}
             {/* 各カード */}
             {predictions.slice().reverse().map((p) => (
