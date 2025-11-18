@@ -31,7 +31,7 @@ export default function PredictionCard({
         {
           x: 0,
           duration: 1.6,
-          ease: "elastic.out(1,0.3)"
+          ease: "elastic.out(1,0.3)",
           onComplete: () => {
             prediction.isNew = false
           }
