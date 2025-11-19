@@ -8,10 +8,15 @@ import PredictionCard from './components/PredictionCard';
 import Button from './components/common/Button';
 
 export default function Home() {
-  const [predictions, setPredictions] = useState([]); // 予想一覧
-  const [raceName, setRaceName] = useState(''); // レース名
+  const [races, setRaces] = useState([]); // 予想一覧
+  const [venue, setVenue] = useState('') // 会場
+  const [raceNumber, setRaceNumber] = useState('') // レース番号
+  const [surface, setSurface] = useState('') // 芝状態
+  const [weather, setWeather] = useState('') // 天候
+  const [distance,setDistance] = useState('') // 距離
   const [horseName, setHorseName] = useState(''); // 馬名
   const [rank, setRank] = useState(''); // 順位
+  const [prediction, setPrediction] = useState([]) // 予想
   const [editingID, setEditingID] = useState(''); // 編集中のID
 
   /* ------------------------------------
@@ -20,60 +25,49 @@ export default function Home() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const saved = localStorage.getItem('predictions'); // ローカルストレージからキー名のデータを取得
-    const predictions = saved ? JSON.parse(saved) : []; // 予想がすでにローカルストレージにあれば、空のデータを。新しければsavedのデータを
+    const saved = localStorage.getItem('races'); // ローカルストレージからキー名のデータを取得
+    const savedRaces = saved ? JSON.parse(saved) : []; // 予想がすでにローカルストレージにあれば、空のデータを。新しければsavedのデータを
+    // 新規追加
+    const newID = generateID();
+    const newRace = {
+      id: newID,
+      venue: venue,
+      raceNumber: raceNumber,
+      surface: surface,
+      weather: weather,
+      distance: distance,
+      predictions: [],
+      raceName: raceName,
+      createdAt: generateID('-', ':', ' '),
+      editedAt: '',
+      isNew: true,
+    };
 
-    if (editingID) {
-      // 編集モード
-      const updatedPredictions = predictions.map((p) =>
-        p.id === editingID ? { ...p, raceName, horseName, rank, editedAt: generateID('-', ':', ' ') } : p
-      );
-      localStorage.setItem('predictions', JSON.stringify(updatedPredictions)); // ローカルストレージに更新された予想を入れる
-      setPredictions(updatedPredictions);
-      setEditingID('');
-    } else {
-      // 新規追加
-      const newID = generateID();
-      const prediction = {
-        id: newID,
-        raceName: raceName,
-        horseName: horseName,
-        rank: rank,
-        createdAt: generateID('-', ':', ' '),
-        editedAt: '',
-        isNew: true,
-      };
-      predictions.push(prediction); // 予想をデータに入れる
-      localStorage.setItem('predictions', JSON.stringify(predictions)); // ローカルストレージに文字列でpredictionsを入れる
-      setPredictions(predictions);
-    }
+    const updateRaces = [...savedRaces, newRace];
+    localStorage.setItem('races', JSON.stringify(updateRaces)); // ローカルストレージに文字列でpredictionsを入れる
+    setRaces(updateRaces);
 
+    alert('予想を編集しました');
     // フォームのリセット
-    setRaceName('');
-    setHorseName('');
-    setRank('');
-
-    alert(editingID ? '予想を編集しました' : '予想を保存しました');
-  };
+    setVenue('');
+    setRaceNumber('');
+    setSurface('');
+    setWeather('');
+    setDistance('');
+  }
 
   /* ------------------------------------
     削除関数
   ------------------------------------ */
   const handleDelete = (id) => {
-    // 1. 確認ダイアログを表示(本当に削除する?)
-    // 2. キャンセルされたら何もせず終了
+
     if (!confirm('削除しますか？')) return;
 
-    // 3. localStorageから全データを取得
     const saved = localStorage.getItem('predictions');
     const predictions = saved ? JSON.parse(saved) : [];
 
-    // 4. 削除したいID以外のデータだけを残す(filter)
     const updatedPredictions = predictions.filter((p) => p.id !== id);
-
-    // 5. 残ったデータをlocalStorageに保存
     localStorage.setItem('predictions', JSON.stringify(updatedPredictions));
-    // 6. stateを更新(再レンダリング)
     setPredictions(updatedPredictions);
 
     // フォームのリセット]
@@ -103,9 +97,9 @@ export default function Home() {
 
   // 初回ロード時にローカルストレージからデータを取得し、オブジェクトに格納
   useEffect(() => {
-    const saved = localStorage.getItem('predictions'); // ローカルストレージからキー名のデータを取得
-    if (saved) {
-      setPredictions(JSON.parse(saved));
+    const savedRaces = localStorage.getItem('races'); // ローカルストレージからキー名のデータを取得
+    if (savedRaces) {
+      setRaces(JSON.parse(savedRaces));
     }
   }, []);
 
