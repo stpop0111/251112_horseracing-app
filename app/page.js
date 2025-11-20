@@ -8,15 +8,23 @@ import PredictionCard from './components/PredictionCard';
 import Button from './components/common/Button';
 
 export default function Home() {
+  // レース一覧の状態関数
   const [races, setRaces] = useState([]); // 予想一覧
   const [venue, setVenue] = useState('') // 会場
   const [raceNumber, setRaceNumber] = useState('') // レース番号
-  const [surface, setSurface] = useState('') // 芝状態
+  const [field, setField] = useState('') // レース場
+  const [surface, setSurface] = useState('') // 場状態
+  const [distance, setDistance] = useState('') // 距離
   const [weather, setWeather] = useState('') // 天候
-  const [distance,setDistance] = useState('') // 距離
+
+  // 予想カードの状態関数
   const [horseName, setHorseName] = useState(''); // 馬名
-  const [rank, setRank] = useState(''); // 順位
-  const [prediction, setPrediction] = useState([]) // 予想
+  const [frameNumber, setFrameNumber] = useState('') // 枠番
+  const [rank, setRank] = useState('') // 予想順位
+  const [preMemo, setPreMemo] = useState('') // 予想メモ
+  const [recoMemo, setRecoMemo] = useState(''); // 反省メモ
+
+  // その他の状態関数
   const [editingID, setEditingID] = useState(''); // 編集中のID
 
   /* ------------------------------------
@@ -31,29 +39,31 @@ export default function Home() {
     const newID = generateID();
     const newRace = {
       id: newID,
-      venue: venue,
-      raceNumber: raceNumber,
-      surface: surface,
-      weather: weather,
-      distance: distance,
-      predictions: [],
-      raceName: raceName,
-      createdAt: generateID('-', ':', ' '),
-      editedAt: '',
-      isNew: true,
+      venue: venue, // 会場
+      raceNumber: raceNumber, // レース番号
+      field: field, // レース場
+      surface: surface, // 場状態
+      distance: distance, // 距離
+      weather: weather, // 天候
+      predictions: [], // 予想について
+      createdAt: generateID('-', ':', ' '), // 作成日時
+      editedAt: '', // 編集日時
+      isNew: true, // 新規追加フラグ
     };
 
     const updateRaces = [...savedRaces, newRace];
-    localStorage.setItem('races', JSON.stringify(updateRaces)); // ローカルストレージに文字列でpredictionsを入れる
+    localStorage.setItem('races', JSON.stringify(updateRaces)); // ローカルストレージに文字列でracesを入れる
     setRaces(updateRaces);
 
     alert('予想を編集しました');
+
     // フォームのリセット
     setVenue('');
     setRaceNumber('');
+    setField('');
     setSurface('');
-    setWeather('');
     setDistance('');
+    setWeather('');
   }
 
   /* ------------------------------------
@@ -63,18 +73,20 @@ export default function Home() {
 
     if (!confirm('削除しますか？')) return;
 
-    const saved = localStorage.getItem('predictions');
-    const predictions = saved ? JSON.parse(saved) : [];
+    const saved = localStorage.getItem('races');
+    const deletedRaces = saved ? JSON.parse(saved) : [];
 
-    const updatedPredictions = predictions.filter((p) => p.id !== id);
-    localStorage.setItem('predictions', JSON.stringify(updatedPredictions));
-    setPredictions(updatedPredictions);
+    const updatedRaces = deletedRaces.filter((p) => p.id !== id);
+    localStorage.setItem('races', JSON.stringify(updatedRaces));
+    setRaces(updatedRaces);
 
-    // フォームのリセット]
-    setEditingID('');
-    setRaceName('');
-    setHorseName('');
-    setRank('');
+    // フォームのリセット
+    setVenue('');
+    setRaceNumber('');
+    setField('');
+    setSurface('');
+    setDistance('');
+    setWeather('');
 
     // 7. 削除完了メッセージを表示
     console.log('削除しました');
@@ -123,13 +135,14 @@ export default function Home() {
               {editingID ? '編集フォーム' : '登録フォーム'}
             </h2>
             <PredictionsForm
-              raceName={raceName}
-              setRaceName={setRaceName}
-              horseName={horseName}
-              setHorseName={setHorseName}
-              rank={rank}
-              setRank={setRank}
-              handleSubmit={handleSubmit}
+              raceInfo={{
+                venue, setVenue,
+                raceNumber, setRaceNumber,
+                field, setField,
+                surface, setSurface,
+                distance, setDistance,
+                weather, setWeather,
+              }}
               editingID={editingID}
             />
             <div className='flex gap-2'>
@@ -140,10 +153,12 @@ export default function Home() {
                 variant='gray'
                 size='sml'
                 onClick={() => {
-                  setEditingID('');
-                  setRaceName('');
-                  setHorseName('');
-                  setRank('');
+                  setVenue('');
+                  setRaceNumber('');
+                  setField('');
+                  setSurface('');
+                  setDistance('');
+                  setWeather('');
                 }}
               >
                 リセット
@@ -157,14 +172,14 @@ export default function Home() {
         <div className='px-6'>
           <div className='mb-4 flex justify-between'>
             <h2 className='text-2xl pl-2 border-l-4 border-l-amber-200 font-bold'>予想一覧</h2>
-            {predictions.length !== 0 && (
+            {races.length !== 0 && (
               <Button
                 variant='red'
                 size='sml'
                 onClick={() =>{
                   if (!confirm('すべての予想を削除しますか？')) return;
-                  localStorage.removeItem('predictions');
-                  setPredictions([]);
+                  localStorage.removeItem('races');
+                  setRaces([]);
                 }}
               >
                 すべて削除
@@ -173,36 +188,16 @@ export default function Home() {
             )}
           </div>
           <div className='flex flex-col gap-2 max-h-[400px] overflow-y-auto overflow-x-hidden'>
-            {predictions.length === 0 && <p className='text-gray-800 text-lg'>予想がありません</p>}
+            {races.length === 0 && <p className='text-gray-800 text-lg'>予想がありません</p>}
             {/* 各カード */}
-            {predictions.slice().reverse().map((p) => (
+            {races.slice().reverse().map((p) => (
               <PredictionCard
-                key={p.id}
-                raceName={raceName}
-                setRaceName={setRaceName}
-                horseName={horseName}
-                setHorseName={setHorseName}
-                rank={rank}
-                setRank={setRank}
-                id={p.id}
-                prediction={p}
-                editingID={editingID}
-                onEdit={() => {
-                  setEditingID(p.id);
-                  setRaceName(p.raceName);
-                  setHorseName(p.horseName);
-                  setRank(p.rank);
-                }}
-                onDelete={() => {
-                  handleDelete(p.id);
-                }}
-                onCancelEdit={() => {
-                  setEditingID('');
-                  setRaceName('');
-                  setHorseName('');
-                  setRank('');
-                }}
-                handleSubmit={handleSubmit}
+              key={p.id}
+              race={p}
+              editingID={editingID}
+              onDelete={() => {
+                handleDelete(p.id);
+              }}
               />
             ))}
           </div>
