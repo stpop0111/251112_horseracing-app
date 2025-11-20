@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import gsap from 'gsap';
+import Link from 'next/link';
 
 import PredictionsForm from './components/PredictionsForm';
 import PredictionCard from './components/PredictionCard';
@@ -190,15 +190,15 @@ export default function Home() {
           <div className='flex flex-col gap-2 max-h-[400px] overflow-y-auto overflow-x-hidden'>
             {races.length === 0 && <p className='text-gray-800 text-lg'>予想がありません</p>}
             {/* 各カード */}
-            {races.slice().reverse().map((p) => (
-              <PredictionCard
-              key={p.id}
-              race={p}
-              editingID={editingID}
-              onDelete={() => {
-                handleDelete(p.id);
-              }}
-              />
+            {races.slice().reverse().map((race) => (
+              <Link href={`/race/${race.id}`} key={race.id}>
+                <PredictionCard
+                race={race}
+                onDelete={() => {
+                  handleDelete(race.id);
+                }}
+                />
+              </Link>
             ))}
           </div>
         </div>
