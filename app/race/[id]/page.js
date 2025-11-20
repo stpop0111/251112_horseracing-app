@@ -11,9 +11,6 @@ export default function RacePage({ params }) {
     third: { horseName: '', frameNumber: '' },
   });
 
-  const [horseName, setHorseName] = useState(''); // 馬名
-  const [frameNumber, setFrameNumber] = useState(''); // 枠番
-  const [rank, setRank] = useState(''); // 予想順位
   const [preMemo, setPreMemo] = useState(''); // 予想メモ
   const [recoMemo, setRecoMemo] = useState(''); // 反省メモ
 
@@ -24,6 +21,11 @@ export default function RacePage({ params }) {
     const saved = JSON.parse(localStorage.getItem('races')); // ローカルストレージからレースを取得
     const selectedRace = saved.find((r) => r.id === param.id);
     setRaceData(selectedRace);
+
+    if(selectedRace?.predictions) {
+      setPredictions(selectedRace.predictions)
+    }
+
   }, []);
 
   // inputの値が変わった時
