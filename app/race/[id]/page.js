@@ -39,21 +39,20 @@ export default function RacePage({ params }) {
   };
 
   // 保存ボタンを押した時
-  const handleSubmit = () => {
-    // 1. localStorageからracesを取得
-    const saved = JSON.parse(localStorage.getItem("races"));
-    // 2. 該当レースを探す
-    const savedRace = saved.find((r) => r.id === raceData.id);
-    // 3. そのレースにpredictionsを追加
-    const updatedRaces = savedRace({
-      ...savedRace,
-      preditions: predictions, 
-    })
-    // 4. racesをlocalStorageに保存
-    localStorage.setItem('races', JSON.stringify(updatedRaces));
-    
-    // 5. raceDataも更新(画面に反映)
-    setRaceData(updatedRaces)
+  const handleSubmit = (e) => {
+    e.preventDefault(); // イベントを無視
+
+    const saved = JSON.parse(localStorage.getItem("races")); // ローカルデータからレース情報を全て取得する
+    const index = saved.findIndex((r) => r.id === raceData.id); // レースデータのIDをsavedから照合し、その配列番号を記録する
+
+    // 照合した配列番号のレースを”直接”上書きする
+    saved[index] = {
+      ...saved[index], // レース情報はそのまま
+      predictions: predictions, // 予想は現在の状態変数から取得
+    }
+
+    localStorage.setItem("races", JSON.stringify(saved)) // 上書きしたデータをローカルストレージにそのまま上書き
+    setRaceData(saved[index]) // 状態関数には照合した配列番号のレースデータを入れる（ページでの情報）
   };
 
   return (
