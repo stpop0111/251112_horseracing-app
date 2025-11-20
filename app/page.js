@@ -17,12 +17,7 @@ export default function Home() {
   const [distance, setDistance] = useState('') // 距離
   const [weather, setWeather] = useState('') // 天候
 
-  // 予想カードの状態関数
-  const [horseName, setHorseName] = useState(''); // 馬名
-  const [frameNumber, setFrameNumber] = useState('') // 枠番
-  const [rank, setRank] = useState('') // 予想順位
-  const [preMemo, setPreMemo] = useState('') // 予想メモ
-  const [recoMemo, setRecoMemo] = useState(''); // 反省メモ
+
 
   // その他の状態関数
   const [editingID, setEditingID] = useState(''); // 編集中のID
@@ -109,9 +104,9 @@ export default function Home() {
 
   // 初回ロード時にローカルストレージからデータを取得し、オブジェクトに格納
   useEffect(() => {
-    const savedRaces = localStorage.getItem('races'); // ローカルストレージからキー名のデータを取得
-    if (savedRaces) {
-      setRaces(JSON.parse(savedRaces));
+    const saved = JSON.parse(localStorage.getItem('races')); // ローカルストレージからキー名のデータを取得
+    if (saved) {
+      setRaces(saved);
     }
   }, []);
 
