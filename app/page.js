@@ -8,6 +8,10 @@ import PredictionCard from './components/PredictionCard';
 import Button from './components/common/Button';
 
 export default function Home() {
+
+  /* ------------------------------------
+    状態関数の宣言
+  ------------------------------------ */
   // レース一覧の状態関数
   const [races, setRaces] = useState([]); // 予想一覧
   const [venue, setVenue] = useState('') // 会場
@@ -17,10 +21,19 @@ export default function Home() {
   const [distance, setDistance] = useState('') // 距離
   const [weather, setWeather] = useState('') // 天候
 
-
-
   // その他の状態関数
   const [editingID, setEditingID] = useState(''); // 編集中のID
+
+  /* ------------------------------------
+  初回ロード時にローカルストレージからデータを取得し、オブジェクトに格納
+  ------------------------------------ */
+  useEffect(() => {
+    const saved = JSON.parse(localStorage.getItem('races')); // ローカルストレージからキー名のデータを取得
+    if (saved) {
+      setRaces(saved);
+    }
+  }, []);
+
 
   /* ------------------------------------
     登録関数
@@ -28,10 +41,11 @@ export default function Home() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const saved = localStorage.getItem('races'); // ローカルストレージからキー名のデータを取得
-    const savedRaces = saved ? JSON.parse(saved) : []; // 予想がすでにローカルストレージにあれば、空のデータを。新しければsavedのデータを
-    // 新規追加
-    const newID = generateID();
+    // 保存されているレースを取得
+    const savedRaces = JSON.parse(localStorage.getItem('races'));
+
+    // レース情報の入力
+    const newID = generateID(); // ID作成関数の呼び出し
     const newRace = {
       id: newID,
       venue: venue, // 会場
@@ -40,17 +54,18 @@ export default function Home() {
       surface: surface, // 場状態
       distance: distance, // 距離
       weather: weather, // 天候
-      predictions: [], // 予想について
+      predictions: [], // 予想について（各ページにて編集）
       createdAt: generateID('-', ':', ' '), // 作成日時
       editedAt: '', // 編集日時
       isNew: true, // 新規追加フラグ
     };
 
-    const updateRaces = [...savedRaces, newRace];
-    localStorage.setItem('races', JSON.stringify(updateRaces)); // ローカルストレージに文字列でracesを入れる
-    setRaces(updateRaces);
+    // 新規レースの追加
+    const updateRaces = [...savedRaces, newRace]; // スプレッド構文で新規レースを既存レースに上書き
+    localStorage.setItem('races', JSON.stringify(updateRaces)); // ローカルストレージに上書きした配列を保存
+    setRaces(updateRaces); // 状態関数にも保存
 
-    alert('予想を編集しました');
+    alert('予想を編集しました'); // TODO:モーダル表示にしてデザイン性を高める
 
     // フォームのリセット
     setVenue('');
@@ -65,15 +80,16 @@ export default function Home() {
     削除関数
   ------------------------------------ */
   const handleDelete = (id) => {
-
+    // パラメーターにidを使用
     if (!confirm('削除しますか？')) return;
 
-    const saved = localStorage.getItem('races');
-    const deletedRaces = saved ? JSON.parse(saved) : [];
+    // 保存されているレースを取得
+    const deletedRaces =  JSON.parse(localStorage.getItem('races'));
 
+    // 選択されたレース情報を配列の各オブジェクトで照合し、”それ以外の配列(updatedRaces)”を作成
     const updatedRaces = deletedRaces.filter((p) => p.id !== id);
-    localStorage.setItem('races', JSON.stringify(updatedRaces));
-    setRaces(updatedRaces);
+    localStorage.setItem('races', JSON.stringify(updatedRaces)); // ローカルストレージに上書きした配列を保存
+    setRaces(updatedRaces); // 状態関数にも保存
 
     // フォームのリセット
     setVenue('');
@@ -83,8 +99,7 @@ export default function Home() {
     setDistance('');
     setWeather('');
 
-    // 7. 削除完了メッセージを表示
-    console.log('削除しました');
+    console.log('削除しました'); // TODO:モーダル表示にしてデザイン性を高める
   };
 
   /* ------------------------------------ 
@@ -101,14 +116,6 @@ export default function Home() {
 
     return `${year}${dateSep}${month}${dateSep}${day}${sep}${hours}${timeSep}${mins}${timeSep}${secs}`;
   };
-
-  // 初回ロード時にローカルストレージからデータを取得し、オブジェクトに格納
-  useEffect(() => {
-    const saved = JSON.parse(localStorage.getItem('races')); // ローカルストレージからキー名のデータを取得
-    if (saved) {
-      setRaces(saved);
-    }
-  }, []);
 
   return (
     <div className='max-w-2xl p-6'>
