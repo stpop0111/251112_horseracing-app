@@ -20,6 +20,7 @@ export default function Home() {
   const [surface, setSurface] = useState('') // 場状態
   const [distance, setDistance] = useState('') // 距離
   const [weather, setWeather] = useState('') // 天候
+  const [horseNumber,setHorseNumber] = useState('') // 頭数
 
   // その他の状態関数
 
@@ -73,6 +74,7 @@ export default function Home() {
     setSurface('');
     setDistance('');
     setWeather('');
+    setHorseNumber('');
   }
 
   /* ------------------------------------
@@ -97,6 +99,7 @@ export default function Home() {
     setSurface('');
     setDistance('');
     setWeather('');
+    setHorseNumber('');
 
     console.log('削除しました'); // TODO:モーダル表示にしてデザイン性を高める
   };
@@ -141,6 +144,7 @@ export default function Home() {
                 surface, setSurface,
                 distance, setDistance,
                 weather, setWeather,
+                horseNumber, setHorseNumber
               }}
             />
             <div className='flex gap-2'>
@@ -157,6 +161,7 @@ export default function Home() {
                   setSurface('');
                   setDistance('');
                   setWeather('');
+                  setHorseNumber('');
                 }}
               >
                 リセット

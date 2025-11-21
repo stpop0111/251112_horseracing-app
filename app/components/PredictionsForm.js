@@ -39,6 +39,11 @@ export default function PredictionsForm({
       value: raceInfo.weather,
       onChange: raceInfo.setWeather,
     },
+    {
+      label:"出馬数",
+      value: raceInfo.horseNumber,
+      onChange: raceInfo.setHorseNumber,
+    },
   ]
 
   // 入力欄のアニメーション
