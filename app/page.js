@@ -22,7 +22,6 @@ export default function Home() {
   const [weather, setWeather] = useState('') // 天候
 
   // その他の状態関数
-  const [editingID, setEditingID] = useState(''); // 編集中のID
 
   /* ------------------------------------
   初回ロード時にローカルストレージからデータを取得し、オブジェクトに格納
@@ -42,7 +41,7 @@ export default function Home() {
     e.preventDefault();
 
     // 保存されているレースを取得
-    const savedRaces = JSON.parse(localStorage.getItem('races'));
+    const savedRaces = JSON.parse(localStorage.getItem('races')) || [];
 
     // レース情報の入力
     const newID = generateID(); // ID作成関数の呼び出し
@@ -130,11 +129,9 @@ export default function Home() {
             className='bg-gray-100 p-6 rounded-xl border-gray-200 border-2 mb-6 drop-shadow-lg'
           >
             <h2
-              className={`text-2xl pl-2 border-l-4 mb-4 font-bold ${
-                editingID ? 'border-l-amber-500' : 'border-l-green-500'
-              }`}
-            >
-              {editingID ? '編集フォーム' : '登録フォーム'}
+              className='text-2xl pl-2 border-l-4 mb-4 font-bold border-l-green-500'
+              >
+              登録フォーム
             </h2>
             <PredictionsForm
               raceInfo={{
@@ -145,7 +142,6 @@ export default function Home() {
                 distance, setDistance,
                 weather, setWeather,
               }}
-              editingID={editingID}
             />
             <div className='flex gap-2'>
               <Button variant='green' size='sml' type='submit' onClick={handleSubmit}>

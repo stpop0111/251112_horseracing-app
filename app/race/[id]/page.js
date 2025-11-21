@@ -1,5 +1,7 @@
 'use client';
 import { useEffect, use, useState } from 'react';
+import Link from 'next/link';
+import Button from '@/app/components/common/Button';
 
 export default function RacePage({ params }) {
   const [raceData, setRaceData] = useState(null);
@@ -22,7 +24,7 @@ export default function RacePage({ params }) {
     const selectedRace = saved.find((r) => r.id === param.id);
     setRaceData(selectedRace);
 
-    if(selectedRace?.predictions) {
+    if(selectedRace?.predictions?.first) {
       setPredictions(selectedRace.predictions)
     }
 
@@ -55,6 +57,8 @@ export default function RacePage({ params }) {
 
     localStorage.setItem("races", JSON.stringify(saved)) // 上書きしたデータをローカルストレージにそのまま上書き
     setRaceData(saved[index]) // 状態関数には照合した配列番号のレースデータを入れる（ページでの情報）
+
+    alert('保存しました') // TODO:モーダル表示にしてデザイン性を高める
   };
 
   return (
@@ -129,9 +133,21 @@ export default function RacePage({ params }) {
             </div>
             {/* ボタン */}
             <div>
-              <button type='submit'>
+              <Button
+                variant='green'
+                type='submit'
+                size='mid'
+              >
                 保存
-              </button>
+              </Button>
+              <Button
+                isLink='true'
+                variant='gray'
+                size='mid'
+                href='/'
+              >
+                一覧に戻る
+              </Button>
             </div>
           </form>
         </div>
