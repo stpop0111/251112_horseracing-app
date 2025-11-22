@@ -10,7 +10,7 @@ export default function Button({
   isLink = false,
   href = '',
 }) {
-  const baseStyles = 'cursor-pointer text-center block font-bold transition-colors ease duration-200 rounded-xl py-2';
+  const baseStyles = 'cursor-pointer text-center block font-bold transition-colors ease duration-200 rounded-xl py-4';
 
   const variantStyles = {
     green: 'bg-green-200 text-green-900 hover:bg-green-900 hover:text-green-200',
