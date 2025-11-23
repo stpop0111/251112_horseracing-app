@@ -29,6 +29,8 @@ export default function RacePage({ params }) {
 
     if (selectedRace?.predictions?.first) {
       setPredictions(selectedRace.predictions);
+      setPreMemo(selectedRace.preMemo);
+      setRecoMemo(selectedRace.recoMemo);
     }
   }, []);
 
@@ -59,7 +61,9 @@ export default function RacePage({ params }) {
     // 照合した配列番号のレースを”直接”上書きする
     saved[index] = {
       ...saved[index], // レース情報はそのまま
-      predictions: predictions, // 予想は現在の状態変数から取得
+      predictions: predictions, // 予想を状態変数から取得
+      preMemo: preMemo, // 予想メモを状態変数から取得
+      recoMemo: recoMemo, // 回顧メモを状態変数から取得
     };
 
     localStorage.setItem('races', JSON.stringify(saved)); // 上書きしたデータをローカルストレージにそのまま上書き
@@ -203,18 +207,22 @@ export default function RacePage({ params }) {
               <div>
                 {activeTab === 'preMemo' && (
                   <div>
-                    <label id='preMemo' className='text-2xl mb-2 block'>
-                      予想メモ
-                    </label>
-                    <input className='rounded-xl border border-gray-100 w-full h-[540px]'></input>
+                    <label className='text-2xl mb-2 block'>予想メモ</label>
+                    <input
+                      className='rounded-xl border border-gray-100 w-full h-[540px]'
+                      value={preMemo}
+                      onChange={(e) => setPreMemo(e.target.value)}
+                    ></input>
                   </div>
                 )}
                 {activeTab === 'recoMemo' && (
                   <div>
-                    <label id='recoMemo' className='text-2xl mb-2 block'>
-                      反省メモ
-                    </label>
-                    <input className='rounded-xl border border-gray-100 w-full h-[540px]'></input>
+                    <label className='text-2xl mb-2 block'>反省メモ</label>
+                    <input
+                      className='rounded-xl border border-gray-100 w-full h-[540px]'
+                      value={recoMemo}
+                      onChange={(e) => setRecoMemo(e.target.value)}
+                    ></input>
                   </div>
                 )}
               </div>
