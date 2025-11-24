@@ -119,14 +119,14 @@ export default function RacePage({ params }) {
     // 17頭立ての時...1 / 2枠が3頭残りは2頭ずつ
     if (raceData.horseNumber === 17) {
       if (frameNumber <= 3) return colors[1];
-      return Math.ceil((horse - 3) / 2) + 1;
+      return colors[Math.ceil((frameNumber - 3) / 2) + 1];
     }
 
     // 18頭建の時...1 / 2枠が3頭残りは2頭ずつ
     if (raceData.horseNumber === 18) {
       if (frameNumber <= 3) return colors[1];
       if (frameNumber <= 6) return colors[2];
-      return Math.ceil((frameNumber - 6) / 2) + 1;
+      return colors[Math.ceil((frameNumber - 6) / 2) + 1];
     }
 
     return "bg-gray-200"; // デフォルト
@@ -179,7 +179,7 @@ export default function RacePage({ params }) {
                       }}
                       type="number"
                       max={raceData.horseNumber}
-                      className={`caret-transparent aspect-square w-[30%] rounded-l-xl border border-gray-800 text-center text-xl font-bold transition-all duration-200 outline-none ${getFrameColor(predictions.first.frameNumber)}`}
+                      className={`aspect-square w-[30%] rounded-l-xl border border-gray-800 text-center text-xl font-bold caret-transparent transition-all duration-200 outline-none ${getFrameColor(predictions.first.frameNumber)}`}
                     ></input>
                     <input
                       value={predictions.first.horseName}
@@ -201,7 +201,7 @@ export default function RacePage({ params }) {
                       }}
                       type="number"
                       max={raceData.horseNumber}
-                      className={`caret-transparent aspect-square w-[30%] rounded-l-xl border border-gray-800 text-center text-xl font-bold transition-all duration-200 outline-none ${getFrameColor(predictions.second.frameNumber)}`}
+                      className={`aspect-square w-[30%] rounded-l-xl border border-gray-800 text-center text-xl font-bold caret-transparent transition-all duration-200 outline-none ${getFrameColor(predictions.second.frameNumber)}`}
                     ></input>
                     <input
                       value={predictions.second.horseName}
@@ -223,7 +223,7 @@ export default function RacePage({ params }) {
                       }}
                       type="number"
                       max={raceData.horseNumber}
-                      className={`caret-transparent aspect-square w-[30%] rounded-l-xl border border-gray-800 text-center text-xl font-bold transition-all duration-200 outline-none ${getFrameColor(predictions.third.frameNumber)}`}
+                      className={`aspect-square w-[30%] rounded-l-xl border border-gray-800 text-center text-xl font-bold caret-transparent transition-all duration-200 outline-none ${getFrameColor(predictions.third.frameNumber)}`}
                     ></input>
                     <input
                       value={predictions.third.horseName}
