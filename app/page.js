@@ -25,6 +25,7 @@ export default function Home() {
   // その他の状態関数
   const [isRegistering, setIsRegistering] = useState(false); // 登録中
   const [isDeleting, setIsDeleting] = useState(false); // 削除中
+  const [selectedRaces, setSelectedRaces] = useState([]); // 選択された予想
 
   /* ------------------------------------
   初回ロード時にローカルストレージからデータを取得し、オブジェクトに格納
@@ -32,7 +33,13 @@ export default function Home() {
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("races")); // ローカルストレージからキー名のデータを取得
     if (saved) {
-      setRaces(saved);
+      setRaces(
+        saved.map((race) => ({
+          ...race,
+          isNew: false,
+        })),
+      );
+      localStorage.setItem("races", JSON.stringify(saved)); // isNewをfalseにした配列で上書き保存
     }
   }, []);
 
@@ -85,26 +92,24 @@ export default function Home() {
   /* ------------------------------------
     削除関数
   ------------------------------------ */
-  const handleDelete = (id) => {
+  const handleDelete = (selectedRaces) => {
     // パラメーターにidを使用
-    if (!confirm("削除しますか？")) return;
+    if (!confirm("削除しますか？")) return; // TODO:モーダル表示にしてデザイン性を高める
 
     // 保存されているレースを取得
-    const deletedRaces = JSON.parse(localStorage.getItem("races"));
+    const savedRaces = JSON.parse(localStorage.getItem("races"));
 
     // 選択されたレース情報を配列の各オブジェクトで照合し、”それ以外の配列(updatedRaces)”を作成
-    const updatedRaces = deletedRaces.filter((p) => p.id !== id);
-    localStorage.setItem("races", JSON.stringify(updatedRaces)); // ローカルストレージに上書きした配列を保存
-    setRaces(updatedRaces); // 状態関数にも保存
+    const updatedRaces = savedRaces.filter(
+      (race) =>
+        !selectedRaces.some((selectedRace) => selectedRace.id === race.id),
+    );
 
-    // フォームのリセット
-    setVenue("");
-    setRaceNumber("");
-    setField("");
-    setSurface("");
-    setDistance("");
-    setWeather("");
-    setHorseNumber("");
+    localStorage.setItem("races", JSON.stringify(updatedRaces)); // ローカルストレージに上書きした配列を保存
+
+    setRaces(updatedRaces); // 状態関数にも保存
+    setIsDeleting(!isDeleting);
+    setSelectedRaces([]); // 選択配列をリセット
 
     console.log("削除しました"); // TODO:モーダル表示にしてデザイン性を高める
   };
@@ -126,158 +131,177 @@ export default function Home() {
 
   return (
     <PageWrapper>
-    <div className="w-4xl p-6">
-      <div className="rounded-3xl border-2 border-amber-100 bg-amber-50 py-6">
-        {/* タイトル */}
-        <div className="mb-6 border-b-2 border-b-amber-400 pb-2 ">
-          <h1 className="text-center text-3xl font-bold">
-            競馬予想メモ
-          </h1>
-        </div>
-
-        {/* トータルスコア */}
-        <div className="mb-4">
-          <div className="px-6">
-            あなたの通算スコア
-            <ul>
-              <li>設定予算：</li>
-              <li>賭け金：</li>
-              <li>払戻金：</li>
-            </ul>
+      <div className="w-4xl p-6">
+        <div className="rounded-3xl border-2 border-amber-100 bg-amber-50 py-6">
+          {/* タイトル */}
+          <div className="mb-6 border-b-2 border-b-amber-400 pb-2">
+            <h1 className="text-center text-3xl font-bold">競馬予想メモ</h1>
           </div>
-        </div>
 
-        {/* 予想の追加 */}
-        <div className="mb-4">
-          <div className="flex gap-4 px-6">
-            <Button
-              variant="green"
-              size="full"
-              onClick={() => setIsRegistering(!isRegistering)}
-            >
-              予想を追加する
-            </Button>
-            <Button variant="red" size="full" onClick={() => setIsDeleting(!isDeleting)}>
-              予想を削除する
-            </Button>
-          </div>
-        </div>
-
-        {/* 入力フォーム
-        ------------------------------*/}
-        {isRegistering && (
-          <div className="fixed top-0 left-0 z-99 h-screen w-screen bg-black/50" onClick={() => setIsRegistering(!isRegistering)}>
-            <div className="flex h-full items-center justify-center">
-              <form
-                onSubmit={handleSubmit}
-                className="mb-6 rounded-xl border-2 border-gray-200 bg-gray-100 p-6 drop-shadow-lg"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <h2 className="mb-4 border-l-4 border-l-green-500 pl-2 text-2xl font-bold">
-                  登録フォーム
-                </h2>
-                <PredictionsForm
-                  raceInfo={{
-                    venue,
-                    setVenue,
-                    raceNumber,
-                    setRaceNumber,
-                    field,
-                    setField,
-                    surface,
-                    setSurface,
-                    distance,
-                    setDistance,
-                    weather,
-                    setWeather,
-                    horseNumber,
-                    setHorseNumber,
-                  }}
-                />
-                <div className="flex gap-2">
-                  <Button
-                    variant="green"
-                    size="sml"
-                    type="submit"
-                    onClick={handleSubmit}
-                  >
-                    登録
-                  </Button>
-                  <Button
-                    variant="gray"
-                    size="sml"
-                    onClick={() => {
-                      setVenue("");
-                      setRaceNumber("");
-                      setField("");
-                      setSurface("");
-                      setDistance("");
-                      setWeather("");
-                      setHorseNumber("");
-                    }}
-                  >
-                    リセット
-                  </Button>
-                </div>
-              </form>
+          {/* トータルスコア */}
+          <div className="mb-4">
+            <div className="px-6">
+              あなたの通算スコア
+              <ul>
+                <li>設定予算：</li>
+                <li>賭け金：</li>
+                <li>払戻金：</li>
+              </ul>
             </div>
           </div>
-        )}
 
-        {/* 予想一覧
-        ------------------------------*/}
-        <div className="px-6">
-          <div className="mb-4 flex justify-between gap-4">
-              <div className="w-full border-l-4 border-l-amber-200 p-4 flex items-center">
-                <h2 className="text-2xl font-bold">
-                  予想一覧
-                </h2>
-              </div>
-            {(races.length !==0 && isDeleting) && (
-              <div className="flex gap-4 w-full">
-                <Button
-                  variant="red"
-                  size="full"
-                  onClick={() => {
-                    if (!confirm("すべての予想を削除しますか？")) return;
-                    localStorage.removeItem("races");
-                    setRaces([]);
-                  }}
-                >
-                  すべて削除
-                </Button>
-                <Button
-                  variant="red"
-                  size="full"
-                >
-                  選択した項目を削除
-                </Button>
-              </div>
-            )}
+          {/* 予想の追加 */}
+          <div className="mb-4">
+            <div className="flex gap-4 px-6">
+              <Button
+                variant="green"
+                size="full"
+                onClick={() => setIsRegistering(!isRegistering)}
+              >
+                予想を追加する
+              </Button>
+              <Button
+                variant="red"
+                size="full"
+                onClick={() => {
+                  setSelectedRaces([]);
+                  setIsDeleting(!isDeleting);
+                }}
+              >
+                予想を削除する
+              </Button>
+            </div>
           </div>
-          <div className="flex flex-col gap-2 overflow-x-hidden">
-            {races.length === 0 && (
-              <p className="text-lg text-gray-800">予想がありません</p>
-            )}
-            {/* 各カード */}
-            {races
-              .slice()
-              .reverse()
-              .map((race) => (
-                <Link href={`/race/${race.id}`} key={race.id}>
-                  <PredictionCard
-                    race={race}
-                    isDeleting={isDeleting}
-                    onDelete={() => {
-                      handleDelete(race.id);
+
+          {/* 入力フォーム
+        ------------------------------*/}
+          {isRegistering && (
+            <div
+              className="fixed top-0 left-0 z-99 h-screen w-screen bg-black/50"
+              onClick={() => setIsRegistering(!isRegistering)}
+            >
+              <div className="flex h-full items-center justify-center">
+                <form
+                  onSubmit={handleSubmit}
+                  className="mb-6 rounded-xl border-2 border-gray-200 bg-gray-100 p-6 drop-shadow-lg"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <h2 className="mb-4 border-l-4 border-l-green-500 pl-2 text-2xl font-bold">
+                    登録フォーム
+                  </h2>
+                  <PredictionsForm
+                    raceInfo={{
+                      venue,
+                      setVenue,
+                      raceNumber,
+                      setRaceNumber,
+                      field,
+                      setField,
+                      surface,
+                      setSurface,
+                      distance,
+                      setDistance,
+                      weather,
+                      setWeather,
+                      horseNumber,
+                      setHorseNumber,
                     }}
                   />
-                </Link>
-              ))}
+                  <div className="flex gap-2">
+                    <Button
+                      variant="green"
+                      size="sml"
+                      type="submit"
+                      onClick={handleSubmit}
+                    >
+                      登録
+                    </Button>
+                    <Button
+                      variant="gray"
+                      size="sml"
+                      onClick={() => {
+                        setVenue("");
+                        setRaceNumber("");
+                        setField("");
+                        setSurface("");
+                        setDistance("");
+                        setWeather("");
+                        setHorseNumber("");
+                      }}
+                    >
+                      リセット
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* 予想一覧
+        ------------------------------*/}
+          <div className="px-6">
+            <div className="mb-4 flex justify-between gap-4">
+              <div className="flex w-full items-center border-l-4 border-l-amber-200 p-4">
+                <h2 className="text-2xl font-bold">予想一覧</h2>
+              </div>
+              {races.length !== 0 && isDeleting && (
+                <div className="flex w-full gap-4">
+                  <Button
+                    variant="red"
+                    size="full"
+                    onClick={() => {
+                      if (!confirm("すべての予想を削除しますか？")) return;
+                      localStorage.removeItem("races");
+                      setRaces([]);
+                    }}
+                  >
+                    すべて削除
+                  </Button>
+                  <Button
+                    variant="red"
+                    size="full"
+                    onClick={() => {
+                      handleDelete(selectedRaces);
+                    }}
+                  >
+                    選択した項目を削除
+                  </Button>
+                </div>
+              )}
+            </div>
+            <div className="flex flex-col gap-2 overflow-x-hidden">
+              {races.length === 0 && (
+                <p className="text-lg text-gray-800">予想がありません</p>
+              )}
+              {/* 各カード */}
+              {races
+                .slice()
+                .reverse()
+                .map((race) => (
+                  <Link href={`/race/${race.id}`} key={race.id}>
+                    <PredictionCard
+                      race={race}
+                      isDeleting={isDeleting}
+                      isChecked={selectedRaces.some((r) => r.id === race.id)}
+                      isSelected={() => {
+                        setSelectedRaces((prev) => {
+                          const alreadySelected = prev.some(
+                            (r) => r.id === race.id,
+                          );
+                          if (alreadySelected) {
+                            return prev.filter((r) => r.id !== race.id);
+                          } else {
+                            return [...prev, race];
+                          }
+                        });
+                      }}
+                    />
+                  </Link>
+                ))}
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </PageWrapper>
   );
 }

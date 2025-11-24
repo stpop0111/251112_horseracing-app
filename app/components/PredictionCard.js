@@ -7,12 +7,20 @@ import Check from "./icons/Check";
 import gsap from "gsap";
 import { useRef, useEffect } from "react";
 
-export default function PredictionCard({ race, isDeleting }) {
-  // 新しい予想の追加アニメーション
+export default function PredictionCard({
+  race,
+  isDeleting,
+  isSelected,
+  isChecked,
+}) {
+  /* ------------------------------------
+    カード追加時のアニメーション
+  ------------------------------------ */
   const cardRef = useRef(null);
+  const hasAnimated = useRef(false); // アニメーション実行済みフラグ
 
   useEffect(() => {
-    if (race.isNew) {
+    if (race.isNew && !hasAnimated.current) {
       gsap.fromTo(
         cardRef.current,
         {
@@ -24,32 +32,49 @@ export default function PredictionCard({ race, isDeleting }) {
           ease: "elastic.out(1,0.3)",
         },
       );
+      hasAnimated.current = true; // 実行済みにマーク
     }
-  }, []);
+  }, [race.isNew]);
 
-  // モーダル表示の出現アニメーション
-  const modalRef = useRef(null);
+  /* ------------------------------------
+    チェックボックスのアニメーション
+  ------------------------------------ */
+  const checkBoxRef = useRef(null);
 
   useEffect(() => {
-    gsap.fromTo(
-      modalRef.current,
-      {
-        scale: 0.5,
-        opacity: 0,
-      },
-      {
-        scale: 1,
-        opacity: 1,
-        duration: 0.6,
-        ease: "power4.out",
-      },
-    );
-  }, [race.id]);
+    if (isChecked) {
+      gsap.fromTo(
+        checkBoxRef.current,
+        {
+          opacity: 0.5,
+          scale: 0,
+        },
+        {
+          opacity: 1,
+          scale: 1,
+          duration: 0.8,
+          ease: "elastic.out(1,0.3)",
+        },
+      );
+    } else {
+      gsap.fromTo(
+        checkBoxRef.current,
+        {
+          scale: 1,
+        },
+        {
+          scale: 0,
+          duration: 0.4,
+          ease: "power2.in",
+        },
+      );
+    }
+  }, [isChecked]);
 
   return (
     <div key={race.id}>
       <div
-        className="relative rounded-xl border-2 border-amber-200 bg-amber-50 p-4"
+        className="relative overflow-hidden rounded-xl border-2 border-amber-200 bg-amber-50 p-4"
         ref={cardRef}
       >
         <div className="flex justify-between">
@@ -75,14 +100,22 @@ export default function PredictionCard({ race, isDeleting }) {
         {/* 削除サークル */}
         {isDeleting && (
           <div
-            className="w-max-[16px] absolute top-0 right-0 z-10 m-4 aspect-square w-[5%] rounded-full border-3 border-gray-700 p-0.5"
-            onClick={() => deleteRace(race)}
+            className={`absolute top-0 right-0 z-10 m-4 aspect-square w-[5%] max-w-8 min-w-4 rounded-full border-3 p-0.5 duration-400 ${
+              isChecked ? "border-gray-400" : "border-gray-800"
+            }`}
+            onClick={(e) => {
+              isSelected();
+              e.preventDefault();
+              e.stopPropagation();
+            }}
           >
-            {deleteRace && (
-              <div className="flex h-full items-center justify-center rounded-full bg-blue-800 p-1 text-lg font-bold text-gray-100">
-                <Check fill="rgb(255,255,255)" />
-              </div>
-            )}
+            <div
+              className="flex h-full items-center justify-center rounded-full bg-blue-800 p-1 text-lg font-bold text-gray-100"
+              ref={checkBoxRef}
+              style={{ opacity: 0, transform: "scale(0)" }}
+            >
+              <Check fill="rgb(255,255,255)" />
+            </div>
           </div>
         )}
       </div>
