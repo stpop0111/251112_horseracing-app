@@ -144,7 +144,7 @@ export default function Home() {
     const savedRaces = JSON.parse(localStorage.getItem("races")) || [];
     setFilteredRaces(
       savedRaces.filter((race) => 
-        race.venue === filteredVenue && race.field === filteredField && race.distance === filteredDistance
+        race.venue === filteredVenue || race.field === filteredField || race.distance === filteredDistance
       ),
     );
   };
@@ -305,7 +305,7 @@ export default function Home() {
                 <p className="text-lg text-gray-800">予想がありません</p>
               )}
               {/* 各カード */}
-              {filteredRaces
+              {filteredRaces.length !== 0
                 ? filteredRaces
                     .slice()
                     .reverse()
