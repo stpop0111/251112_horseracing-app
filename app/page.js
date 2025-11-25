@@ -7,6 +7,7 @@ import PredictionsForm from "./components/PredictionsForm";
 import PredictionCard from "./components/PredictionCard";
 import Button from "./components/common/Button";
 import PageWrapper from "./components/common/PageWrapper";
+import FilterComponent from "./components/FilterComponent";
 
 export default function Home() {
   /* ------------------------------------
@@ -269,6 +270,24 @@ export default function Home() {
                 </div>
               )}
             </div>
+            <FilterComponent
+              raceInfo={{
+                venue,
+                setVenue,
+                raceNumber,
+                setRaceNumber,
+                field,
+                setField,
+                surface,
+                setSurface,
+                distance,
+                setDistance,
+                weather,
+                setWeather,
+                horseNumber,
+                setHorseNumber,
+              }}
+            />
             <div className="flex flex-col gap-2 overflow-x-hidden">
               {races.length === 0 && (
                 <p className="text-lg text-gray-800">予想がありません</p>
