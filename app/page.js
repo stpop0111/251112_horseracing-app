@@ -142,11 +142,11 @@ export default function Home() {
   ------------------------------------ */
   const handleFilter = () => {
     const savedRaces = JSON.parse(localStorage.getItem("races")) || [];
-    setFilteredRaces = savedRaces.filter((race) => {
-      race.venue === filteredVenue ||
-        race.field === filteredField ||
-        race.distance === filteredDistance;
-    });
+    setFilteredRaces(
+      savedRaces.filter((race) => 
+        race.venue === filteredVenue && race.field === filteredField && race.distance === filteredDistance
+      ),
+    );
   };
 
   return (
@@ -305,7 +305,7 @@ export default function Home() {
                 <p className="text-lg text-gray-800">予想がありません</p>
               )}
               {/* 各カード */}
-              {!filteredRaces
+              {filteredRaces
                 ? filteredRaces
                     .slice()
                     .reverse()

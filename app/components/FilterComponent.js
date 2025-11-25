@@ -32,7 +32,7 @@ export default function FilterComponent ({
       <div className="flex justify-between gap-10">
         <div className="flex gap-2">
           {selectorOptions.map((selector) => (
-            <select key={selector.label} value={selector.value} onChange={selector.onChange}>
+            <select key={selector.label} value={selector.value} onChange={(e) => selector.onChange(e.target.value)}>
               <option>選択してください</option>
               {selector.options.map((opt) => (
                 <option key={opt} value={opt}>{opt}</option>
