@@ -143,9 +143,11 @@ export default function Home() {
   const handleFilter = () => {
     const savedRaces = JSON.parse(localStorage.getItem("races")) || [];
     setFilteredRaces = savedRaces.filter((race) => {
-      race.venue === filteredVenue || race.field === filteredField || race.distance === filteredDistance
-    })
-  }
+      race.venue === filteredVenue ||
+        race.field === filteredField ||
+        race.distance === filteredDistance;
+    });
+  };
 
   return (
     <PageWrapper>
@@ -287,11 +289,14 @@ export default function Home() {
                 </div>
               )}
             </div>
-            <FilterComponent 
+            <FilterComponent
               filterdRace={{
-                filteredVenue, setFilteredVenue,
-                filteredField, setFilteredField,
-                filteredDistance, setFilteredDistance,
+                filteredVenue,
+                setFilteredVenue,
+                filteredField,
+                setFilteredField,
+                filteredDistance,
+                setFilteredDistance,
               }}
               handleFilter={handleFilter}
             />
@@ -300,30 +305,59 @@ export default function Home() {
                 <p className="text-lg text-gray-800">予想がありません</p>
               )}
               {/* 各カード */}
-              {races
-                .slice()
-                .reverse()
-                .map((race) => (
-                  <Link href={`/race/${race.id}`} key={race.id}>
-                    <PredictionCard
-                      race={race}
-                      isDeleting={isDeleting}
-                      isChecked={selectedRaces.some((r) => r.id === race.id)}
-                      isSelected={() => {
-                        setSelectedRaces((prev) => {
-                          const alreadySelected = prev.some(
+              {!filteredRaces
+                ? filteredRaces
+                    .slice()
+                    .reverse()
+                    .map((race) => (
+                      <Link href={`/race/${race.id}`} key={race.id}>
+                        <PredictionCard
+                          race={race}
+                          isDeleting={isDeleting}
+                          isChecked={selectedRaces.some(
                             (r) => r.id === race.id,
-                          );
-                          if (alreadySelected) {
-                            return prev.filter((r) => r.id !== race.id);
-                          } else {
-                            return [...prev, race];
-                          }
-                        });
-                      }}
-                    />
-                  </Link>
-                ))}
+                          )}
+                          isSelected={() => {
+                            setSelectedRaces((prev) => {
+                              const alreadySelected = prev.some(
+                                (r) => r.id === race.id,
+                              );
+                              if (alreadySelected) {
+                                return prev.filter((r) => r.id !== race.id);
+                              } else {
+                                return [...prev, race];
+                              }
+                            });
+                          }}
+                        />
+                      </Link>
+                    ))
+                : races
+                    .slice()
+                    .reverse()
+                    .map((race) => (
+                      <Link href={`/race/${race.id}`} key={race.id}>
+                        <PredictionCard
+                          race={race}
+                          isDeleting={isDeleting}
+                          isChecked={selectedRaces.some(
+                            (r) => r.id === race.id,
+                          )}
+                          isSelected={() => {
+                            setSelectedRaces((prev) => {
+                              const alreadySelected = prev.some(
+                                (r) => r.id === race.id,
+                              );
+                              if (alreadySelected) {
+                                return prev.filter((r) => r.id !== race.id);
+                              } else {
+                                return [...prev, race];
+                              }
+                            });
+                          }}
+                        />
+                      </Link>
+                    ))}
             </div>
           </div>
         </div>
