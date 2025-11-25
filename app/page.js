@@ -23,6 +23,11 @@ export default function Home() {
   const [weather, setWeather] = useState(""); // 天候
   const [horseNumber, setHorseNumber] = useState(""); // 頭数
 
+  // 絞り込み用の状態関数
+  const [filteredVenue, setFilteredVenue] = useState("");
+  const [filteredField, setFilteredField] = useState("");
+  const [filteredDistance, setFilteredDistance] = useState("");
+
   // その他の状態関数
   const [isRegistering, setIsRegistering] = useState(false); // 登録中
   const [isDeleting, setIsDeleting] = useState(false); // 削除中
@@ -270,22 +275,11 @@ export default function Home() {
                 </div>
               )}
             </div>
-            <FilterComponent
-              raceInfo={{
-                venue,
-                setVenue,
-                raceNumber,
-                setRaceNumber,
-                field,
-                setField,
-                surface,
-                setSurface,
-                distance,
-                setDistance,
-                weather,
-                setWeather,
-                horseNumber,
-                setHorseNumber,
+            <FilterComponent 
+              filterdRace={{
+                filteredDistance, setFilteredDistance,
+                filteredVenue, setFilteredVenue,
+                filteredField, setFilteredField
               }}
             />
             <div className="flex flex-col gap-2 overflow-x-hidden">
