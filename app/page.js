@@ -27,6 +27,7 @@ export default function Home() {
   const [filteredVenue, setFilteredVenue] = useState("");
   const [filteredField, setFilteredField] = useState("");
   const [filteredDistance, setFilteredDistance] = useState("");
+  const [filteredRaces, setFilteredRaces] = useState([]);
 
   // その他の状態関数
   const [isRegistering, setIsRegistering] = useState(false); // 登録中
@@ -47,6 +48,7 @@ export default function Home() {
       );
       localStorage.setItem("races", JSON.stringify(saved)); // isNewをfalseにした配列で上書き保存
     }
+    setFilteredRaces([]);
   }, []);
 
   /* ------------------------------------
@@ -134,6 +136,16 @@ export default function Home() {
 
     return `${year}${dateSep}${month}${dateSep}${day}${sep}${hours}${timeSep}${mins}${timeSep}${secs}`;
   };
+
+  /* ------------------------------------ 
+    絞り込み
+  ------------------------------------ */
+  const handleFilter = () => {
+    const savedRaces = JSON.parse(localStorage.getItem("races")) || [];
+    setFilteredRaces = savedRaces.filter((race) => {
+      race.venue === filteredVenue || race.field === filteredField || race.distance === filteredDistance
+    })
+  }
 
   return (
     <PageWrapper>
@@ -277,10 +289,11 @@ export default function Home() {
             </div>
             <FilterComponent 
               filterdRace={{
-                filteredDistance, setFilteredDistance,
                 filteredVenue, setFilteredVenue,
-                filteredField, setFilteredField
+                filteredField, setFilteredField,
+                filteredDistance, setFilteredDistance,
               }}
+              handleFilter={handleFilter}
             />
             <div className="flex flex-col gap-2 overflow-x-hidden">
               {races.length === 0 && (

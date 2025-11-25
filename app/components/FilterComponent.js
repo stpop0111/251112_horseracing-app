@@ -4,20 +4,26 @@ import { selector } from "gsap"
 
 export default function FilterComponent ({
   filterdRace,
-  handleFiltered
+  handleFilter
 }) {
 
   const selectorOptions = [
     {
       label: "会場",
+      value: filterdRace.filteredVenue,
+      onChange: filterdRace.setFilteredVenue,
       options: raceOptions.venue,
     },
     {
       label: "馬場",
+      value: filterdRace.filteredField,
+      onChange: filterdRace.setFilteredField,
       options: raceOptions.field,
     },
     {
       label: "距離",
+      value: filterdRace.filteredDistance,
+      onChange: filterdRace.setFilteredDistance,
       options: raceOptions.distance[filterdRace.filteredField] || [],
     }
   ]
@@ -25,10 +31,10 @@ export default function FilterComponent ({
     <div className="mb-4">
       <div className="flex justify-between gap-10">
         <div className="flex gap-2">
-          {selectorOptions.map((selectors) => (
-            <select key={selectors.label}>
+          {selectorOptions.map((selector) => (
+            <select key={selector.label} value={selector.value} onChange={selector.onChange}>
               <option>選択してください</option>
-              {selectors.options.map((opt) => (
+              {selector.options.map((opt) => (
                 <option key={opt} value={opt}>{opt}</option>
               ))}
             </select>
@@ -37,7 +43,7 @@ export default function FilterComponent ({
         <Button
           variant="orange"
           size="full"
-          onClick={handleFiltered}
+          onClick={handleFilter}
         >
           検索する
         </Button>
