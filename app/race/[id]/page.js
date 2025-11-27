@@ -26,13 +26,14 @@ export default function RacePage({ params }) {
   ------------------------------------ */
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("races")); // ローカルストレージからレースを取得
-    const selectedRace = saved.find((r) => r.id === param.id);
-    setRaceData(selectedRace);
+    const selectedRace = saved.find((r) => r.id === param.id); // 現在表示されているレースの内容を取得
+    setRaceData(selectedRace); // 状態関数にレース情報を保存
 
-    if (selectedRace?.predictions?.first) {
-      setPredictions(selectedRace.predictions);
-      setPreMemo(selectedRace.preMemo || "");
-      setRecoMemo(selectedRace.recoMemo || "");
+    // レースの情報がある時、状態関数にその値を代入
+    if (selectedRace?.predictions?.first) { 
+      setPredictions(selectedRace.predictions); // 予想
+      setPreMemo(selectedRace.preMemo || ""); // 予想メモ
+      setRecoMemo(selectedRace.recoMemo || ""); // 回顧メモ
     }
   }, []);
 
@@ -40,15 +41,16 @@ export default function RacePage({ params }) {
     入力された文字列の変更の時
   ------------------------------------ */
   const handleChange = (position, field, value) => {
+
+    // 引数に「順位」「キー」「値」を受け取る
     setPredictions({
       ...predictions,
       [position]: {
         ...predictions[position],
         [field]: value,
       },
+      // 予想の状態関数にて引数で受け取ったキーと値を相当する順位にて代入する
     });
-
-    console.log(predictions);
   };
 
   /* ------------------------------------
@@ -77,21 +79,21 @@ export default function RacePage({ params }) {
   /* ------------------------------------
     タブ切り替え
   ------------------------------------ */
-  const [activeTab, setActiveTab] = useState("preMemo");
-  const tabContainerRef = useRef(null);
+  const [activeTab, setActiveTab] = useState("preMemo"); // 現在開いているメモの種類を保存する（デフォルト：予想メモ）
+  const tabContainerRef = useRef(null); // CSSが切り替わる要素のコンテナをuseRefで宣言
 
   useEffect(() => {
-    if (!tabContainerRef.current) return;
-    const tabs = tabContainerRef.current.querySelectorAll("button");
+    if (!tabContainerRef.current) return; // DOMがない場合は強制終了
+    const tabs = tabContainerRef.current.querySelectorAll("button"); // 変化させる要素を取得
 
     tabs.forEach((tab) => {
       if (tab.value === activeTab) {
-        tab.classList.add("bg-neutral-50", "shadow-lg", "font-bold");
+        tab.classList.add("bg-neutral-50", "shadow-lg", "font-bold"); // activeTabに入っている値と押されたボタンの値が一致している場合にクラスを付与する
       } else {
         tab.classList.remove("bg-neutral-50", "shadow-lg", "font-bold");
       }
     });
-  }, [activeTab]);
+  }, [activeTab]); // 表示されているタブの情報が変わるたびにマウントされる
 
   /* ------------------------------------
     馬番による色変更

@@ -13,7 +13,7 @@ export default function Home() {
   /* ------------------------------------
     状態関数の宣言
   ------------------------------------ */
-  // レース一覧の状態関数
+  // レース一覧の状態管理
   const [races, setRaces] = useState([]); // 予想一覧
   const [venue, setVenue] = useState(""); // 会場
   const [raceNumber, setRaceNumber] = useState(""); // レース番号
@@ -23,13 +23,13 @@ export default function Home() {
   const [weather, setWeather] = useState(""); // 天候
   const [horseNumber, setHorseNumber] = useState(""); // 頭数
 
-  // 絞り込み用の状態関数
+  // 絞り込み用の状態管理
   const [filteredVenue, setFilteredVenue] = useState("");
   const [filteredField, setFilteredField] = useState("");
   const [filteredDistance, setFilteredDistance] = useState("");
   const [filteredRaces, setFilteredRaces] = useState([]);
 
-  // その他の状態関数
+  // その他の状態関数管理
   const [isRegistering, setIsRegistering] = useState(false); // 登録中
   const [isDeleting, setIsDeleting] = useState(false); // 削除中
   const [selectedRaces, setSelectedRaces] = useState([]); // 選択された予想
@@ -140,13 +140,24 @@ export default function Home() {
   /* ------------------------------------ 
     絞り込み
   ------------------------------------ */
+  const [filtered, setFiltered] = useState(false);
+
   const handleFilter = () => {
-    const savedRaces = JSON.parse(localStorage.getItem("races")) || [];
-    setFilteredRaces(
-      savedRaces.filter((race) => 
-        race.venue === filteredVenue || race.field === filteredField || race.distance === filteredDistance
-      ),
-    );
+    setFiltered(true);
+    if (!(filteredVenue || filteredField || filteredDistance)) {
+      setFiltered(false);
+      return;
+    } else {
+      const savedRaces = JSON.parse(localStorage.getItem("races")) || [];
+      setFilteredRaces(
+        savedRaces.filter(
+          (race) =>
+            (filteredVenue === "" || race.venue === filteredVenue) &&
+            (filteredField === "" || race.field === filteredField) &&
+            (filteredDistance === "" || race.distance === filteredDistance),
+        ),
+      );
+    }
   };
 
   return (
@@ -305,8 +316,9 @@ export default function Home() {
                 <p className="text-lg text-gray-800">予想がありません</p>
               )}
               {/* 各カード */}
-              {filteredRaces.length !== 0
-                ? filteredRaces
+              {filtered ? (
+                filteredRaces.length !== 0 ? (
+                  filteredRaces
                     .slice()
                     .reverse()
                     .map((race) => (
@@ -332,32 +344,35 @@ export default function Home() {
                         />
                       </Link>
                     ))
-                : races
-                    .slice()
-                    .reverse()
-                    .map((race) => (
-                      <Link href={`/race/${race.id}`} key={race.id}>
-                        <PredictionCard
-                          race={race}
-                          isDeleting={isDeleting}
-                          isChecked={selectedRaces.some(
-                            (r) => r.id === race.id,
-                          )}
-                          isSelected={() => {
-                            setSelectedRaces((prev) => {
-                              const alreadySelected = prev.some(
-                                (r) => r.id === race.id,
-                              );
-                              if (alreadySelected) {
-                                return prev.filter((r) => r.id !== race.id);
-                              } else {
-                                return [...prev, race];
-                              }
-                            });
-                          }}
-                        />
-                      </Link>
-                    ))}
+                ) : (
+                  <div>何もありません</div>
+                )
+              ) : (
+                races
+                  .slice()
+                  .reverse()
+                  .map((race) => (
+                    <Link href={`/race/${race.id}`} key={race.id}>
+                      <PredictionCard
+                        race={race}
+                        isDeleting={isDeleting}
+                        isChecked={selectedRaces.some((r) => r.id === race.id)}
+                        isSelected={() => {
+                          setSelectedRaces((prev) => {
+                            const alreadySelected = prev.some(
+                              (r) => r.id === race.id,
+                            );
+                            if (alreadySelected) {
+                              return prev.filter((r) => r.id !== race.id);
+                            } else {
+                              return [...prev, race];
+                            }
+                          });
+                        }}
+                      />
+                    </Link>
+                  ))
+              )}
             </div>
           </div>
         </div>

@@ -1,6 +1,5 @@
 import Button from "./common/Button"
 import { raceOptions } from "../data/raceOptions"
-import { selector } from "gsap"
 
 export default function FilterComponent ({
   filterdRace,
