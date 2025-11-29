@@ -91,7 +91,9 @@ export default function PredictionsForm({ raceInfo, editingID }) {
               >
                 <option value="">選択してください</option>
                 {item.options.map((opt) => (
-                  <option key={opt} value={opt}>{opt}</option>
+                  <option key={opt} value={opt}>
+                    {opt}
+                  </option>
                 ))}
               </select>
             ) : (

@@ -163,7 +163,7 @@ export default function Home() {
   return (
     <PageWrapper>
       <div className="w-4xl p-6">
-        <div className="rounded-3xl border-2 border-amber-100 bg-amber-50 py-6">
+        <div className="rounded-3xl border-2 border-amber-100 py-6">
           {/* タイトル */}
           <div className="mb-6 border-b-2 border-b-amber-400 pb-2">
             <h1 className="text-center text-3xl font-bold">競馬予想メモ</h1>
@@ -310,6 +310,8 @@ export default function Home() {
                 setFilteredDistance,
               }}
               handleFilter={handleFilter}
+              filtered={filtered}
+              setFiltered={setFiltered}
             />
             <div className="flex flex-col gap-2 overflow-x-hidden">
               {races.length === 0 && (

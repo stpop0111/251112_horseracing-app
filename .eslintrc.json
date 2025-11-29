@@ -1,0 +1,11 @@
+{
+  "rules": {
+    "lines-around-comment": ["error", {
+      "beforeLineComment": true,
+      "beforeBlockComment": true,
+      "allowBlockStart": true,
+      "allowObjectStart": true,
+      "allowArrayStart": true
+    }]
+  }
+}
