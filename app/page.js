@@ -8,6 +8,7 @@ import PredictionCard from "./components/PredictionCard";
 import Button from "./components/common/Button";
 import PageWrapper from "./components/common/PageWrapper";
 import FilterComponent from "./components/FilterComponent";
+import StatsCard from "./components/StatsCard";
 
 export default function Home() {
   /* ------------------------------------
@@ -15,6 +16,7 @@ export default function Home() {
   ------------------------------------ */
   // レース一覧の状態管理
   const [races, setRaces] = useState([]); // 予想一覧
+  const [raceName, setRaceName] = useState(""); // レース名
   const [venue, setVenue] = useState(""); // 会場
   const [raceNumber, setRaceNumber] = useState(""); // レース番号
   const [field, setField] = useState(""); // レース場
@@ -64,6 +66,7 @@ export default function Home() {
     const newID = generateID(); // ID作成関数の呼び出し
     const newRace = {
       id: newID,
+      raceName: raceName, // レース名
       venue: venue, // 会場
       raceNumber: raceNumber, // レース番号
       field: field, // レース場
@@ -109,8 +112,7 @@ export default function Home() {
 
     // 選択されたレース情報を配列の各オブジェクトで照合し、”それ以外の配列(updatedRaces)”を作成
     const updatedRaces = savedRaces.filter(
-      (race) =>
-        !selectedRaces.some((selectedRace) => selectedRace.id === race.id),
+      (race) => !selectedRaces.some((selectedRace) => selectedRace.id === race.id),
     );
 
     localStorage.setItem("races", JSON.stringify(updatedRaces)); // ローカルストレージに上書きした配列を保存
@@ -162,46 +164,50 @@ export default function Home() {
 
   return (
     <PageWrapper>
-      <div className="w-4xl p-6">
-        <div className="rounded-3xl border-2 border-amber-100 py-6">
+      <div className="w-6xl">
+        <div className="">
           {/* タイトル */}
-          <div className="mb-6 border-b-2 border-b-amber-400 pb-2">
-            <h1 className="text-center text-3xl font-bold">競馬予想メモ</h1>
+          <div className="mb-6">
+            <div className="flex items-center justify-between border-b-2 border-b-amber-400 px-6 py-4">
+              <h1 className="text-3xl font-bold">競馬予想メモ</h1>
+              <div className="flex gap-2">
+                <Button variant="green" size="mid" onClick={() => setIsRegistering(!isRegistering)}>
+                  予想を追加する
+                </Button>
+                <Button
+                  variant="red"
+                  size="mid"
+                  onClick={() => {
+                    setSelectedRaces([]);
+                    setIsDeleting(!isDeleting);
+                  }}
+                >
+                  予想を削除する
+                </Button>
+              </div>
+            </div>
           </div>
 
           {/* トータルスコア */}
           <div className="mb-4">
             <div className="px-6">
-              あなたの通算スコア
-              <ul>
-                <li>設定予算：</li>
-                <li>賭け金：</li>
-                <li>払戻金：</li>
+              <ul className="flex justify-between gap-4">
+                <li className="w-full">
+                  <StatsCard title={"収支"} stat={"3,000円"} color={"gray"} changeRate={-0.23} />
+                </li>
+                <li className="w-full">
+                  <StatsCard title={"予想数"} stat={"10"} color={"gray"} changeRate={0.8} />
+                </li>
+                <li className="w-full">
+                  <StatsCard title={"的中率"} stat={"30%"} color={"gray"} changeRate={1.5} />
+                </li>
               </ul>
             </div>
           </div>
 
           {/* 予想の追加 */}
           <div className="mb-4">
-            <div className="flex gap-4 px-6">
-              <Button
-                variant="green"
-                size="full"
-                onClick={() => setIsRegistering(!isRegistering)}
-              >
-                予想を追加する
-              </Button>
-              <Button
-                variant="red"
-                size="full"
-                onClick={() => {
-                  setSelectedRaces([]);
-                  setIsDeleting(!isDeleting);
-                }}
-              >
-                予想を削除する
-              </Button>
-            </div>
+            <div className="flex gap-4 px-6"></div>
           </div>
 
           {/* 入力フォーム
@@ -220,31 +226,18 @@ export default function Home() {
                   <h2 className="mb-4 border-l-4 border-l-green-500 pl-2 text-2xl font-bold">
                     登録フォーム
                   </h2>
-                  <PredictionsForm
-                    raceInfo={{
-                      venue,
-                      setVenue,
-                      raceNumber,
-                      setRaceNumber,
-                      field,
-                      setField,
-                      surface,
-                      setSurface,
-                      distance,
-                      setDistance,
-                      weather,
-                      setWeather,
-                      horseNumber,
-                      setHorseNumber,
-                    }}
-                  />
+                  <PredictionsForm 
+                  raceInfo={
+                    {venue,setVenue,
+                    raceNumber,setRaceNumber,
+                    field,setField,
+                    surface,setSurface,
+                    distance,setDistance,
+                    weather,setWeather,
+                    horseNumber,setHorseNumber,
+                    }}/>
                   <div className="flex gap-2">
-                    <Button
-                      variant="green"
-                      size="sml"
-                      type="submit"
-                      onClick={handleSubmit}
-                    >
+                    <Button variant="green" size="sml" type="submit" onClick={handleSubmit}>
                       登録
                     </Button>
                     <Button
@@ -315,7 +308,7 @@ export default function Home() {
             />
             <div className="flex flex-col gap-2 overflow-x-hidden">
               {races.length === 0 && (
-                <p className="text-lg text-gray-800">予想がありません</p>
+                <p className="text-center text-lg text-gray-800">予想がありません</p>
               )}
               {/* 各カード */}
               {filtered ? (
@@ -328,14 +321,10 @@ export default function Home() {
                         <PredictionCard
                           race={race}
                           isDeleting={isDeleting}
-                          isChecked={selectedRaces.some(
-                            (r) => r.id === race.id,
-                          )}
+                          isChecked={selectedRaces.some((r) => r.id === race.id)}
                           isSelected={() => {
                             setSelectedRaces((prev) => {
-                              const alreadySelected = prev.some(
-                                (r) => r.id === race.id,
-                              );
+                              const alreadySelected = prev.some((r) => r.id === race.id);
                               if (alreadySelected) {
                                 return prev.filter((r) => r.id !== race.id);
                               } else {
@@ -347,7 +336,9 @@ export default function Home() {
                       </Link>
                     ))
                 ) : (
-                  <div>何もありません</div>
+                  <p className="text-center text-lg text-gray-800">
+                    条件に合う予想がありませんでした
+                  </p>
                 )
               ) : (
                 races
@@ -361,9 +352,7 @@ export default function Home() {
                         isChecked={selectedRaces.some((r) => r.id === race.id)}
                         isSelected={() => {
                           setSelectedRaces((prev) => {
-                            const alreadySelected = prev.some(
-                              (r) => r.id === race.id,
-                            );
+                            const alreadySelected = prev.some((r) => r.id === race.id);
                             if (alreadySelected) {
                               return prev.filter((r) => r.id !== race.id);
                             } else {

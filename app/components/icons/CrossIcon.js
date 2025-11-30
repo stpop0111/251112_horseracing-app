@@ -1,4 +1,4 @@
-export default function Cross({ fill = "currentColor" }) {
+export default function CrossIcon({ fill = "currentColor" }) {
   return (
     <svg
       viewBox="0 0 512 512"

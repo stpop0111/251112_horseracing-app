@@ -2,7 +2,7 @@
 
 import PredictionsForm from "./PredictionsForm";
 import Button from "./common/Button";
-import Check from "./icons/Check";
+import CheckIcon from "./icons/CheckICon";
 
 import gsap from "gsap";
 import { useRef, useEffect } from "react";
@@ -114,7 +114,7 @@ export default function PredictionCard({
               ref={checkBoxRef}
               style={{ opacity: 0, transform: "scale(0)" }}
             >
-              <Check fill="rgb(255,255,255)" />
+              <CheckIcon fill="rgb(255,255,255)" />
             </div>
           </div>
         )}

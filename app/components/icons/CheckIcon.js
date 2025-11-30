@@ -1,4 +1,4 @@
-export default function Check({fill = 'rgb(75, 75, 75)'}) {
+export default function CheckIcon({fill = 'rgb(75, 75, 75)'}) {
 return (
   <svg viewBox="0 0 512 512" style={{ width: '256px', height: '256px', opacity: 1 }}>
       <g>

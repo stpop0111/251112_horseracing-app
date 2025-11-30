@@ -1,6 +1,7 @@
 import Button from "./common/Button";
 import { raceOptions } from "../data/raceOptions";
-import Cross from "./icons/Cross";
+import CrossIcon from "./icons/CrossIcon";
+import SearchIcon from "./icons/SearchIcon";
 
 export default function FilterComponent({ filterdRace, handleFilter, filtered, setFiltered }) {
   // 絞り込みフォームの配列
@@ -46,53 +47,54 @@ export default function FilterComponent({ filterdRace, handleFilter, filtered, s
 
   return (
     <div className="mb-4">
-      <div className="flex justify-between gap-10">
-        {/* 絞り込みフォーム */}
-        <div className="flex gap-2">
-          {selectorOptions.map((selector) => (
-            <div>
-              {selector.label}
-              <select
-                key={selector.label}
-                value={selector.value}
-                onChange={(e) => selector.onChange(e.target.value)}
-                className="outline-none border rounded-lg p-2"
-              >
-                <option value="">選択してください</option>
-                {selector.options.map((opt) => (
-                  <option key={opt} value={opt}>
-                    {opt}
-                  </option>
-                ))}
-              </select>
-            </div>
-          ))}
+      <div className="mb-3">
+        <div className="flex items-center justify-between gap-10 rounded-full border p-2">
+          {/* 絞り込みフォーム */}
+          <div className="flex w-full gap-2 divide-x divide-gray-600">
+            {selectorOptions.map((selector) => (
+              <div className="w-full px-2" key={selector.label}>
+                <div className="text-gray-600 text-sm">{selector.label}</div>
+                <select
+                  value={selector.value}
+                  onChange={(e) => selector.onChange(e.target.value)}
+                  className="block w-full outline-none"
+                >
+                  <option value="">選択してください</option>
+                  {selector.options.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            ))}
+          </div>
+          <div className="h-10 cursor-pointer rounded-full bg-orange-200 p-3 text-orange-900 hover:bg-orange-900 hover:text-orange-200"
+          onClick={handleFilter}
+          >
+            <SearchIcon />
+          </div>
         </div>
-        <Button variant="orange" size="full" onClick={handleFilter}>
-          検索する
-        </Button>
       </div>
 
       {/* 絞り込み表示カード */}
       {filtered && (
-        <div className="flex gap-4">
+        <div className="flex gap-2">
           {filterCards.map(
             (filterCard) =>
               filterCard.value && (
                 <div
                   key={filterCard.value}
-                  className="inline-flex items-center gap-4 rounded-full border px-4 py-2 hover:bg-gray-900 hover:text-gray-50 cursor-pointer transition-colors"
-                                      onClick={() => {
-                      filterCard.onReset();
-                      setFiltered(false);
-                    }}
+                  className="h-8 text-sm inline-flex cursor-pointer items-center gap-4 rounded-full border px-2 py-2 transition-colors hover:bg-gray-900 hover:text-gray-50"
+                  onClick={() => {
+                    filterCard.onReset();
+                    setFiltered(false);
+                  }}
                 >
                   {filterCard.value}
                   {filterCard.suffix}
-                  <div
-                    className="h-8 p-2"
-                  >
-                    <Cross/>
+                  <div className="h-full">
+                    <CrossIcon />
                   </div>
                 </div>
               ),
