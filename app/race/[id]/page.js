@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import Button from "@/app/components/common/Button";
 import PageWrapper from "@/app/components/common/PageWrapper";
+import { TabComponent, Tab } from "@/app/components/common/TabComponent";
 
 export default function RacePage({ params }) {
   const [raceData, setRaceData] = useState(null);
@@ -242,32 +243,14 @@ export default function RacePage({ params }) {
 
               {/* メモ */}
               <div className="mb-6">
-                <div className="mb-4">
-                  <div className="flex justify-center gap-4 rounded-xl bg-gray-200 p-2" ref={tabContainerRef}>
-                    <button
-                      className="tab flex w-full items-center justify-center rounded-lg bg-neutral-50 p-4 font-bold text-gray-600 shadow-lg"
-                      value="preMemo"
-                      type="button"
-                      onClick={(e) => {
-                        setActiveTab(e.target.value);
-                      }}
-                    >
-                      予想メモ
-                    </button>
-                    <button
-                      className="tab flex w-full items-center justify-center rounded-lg p-4 text-gray-600"
-                      value="recoMemo"
-                      type="button"
-                      onClick={(e) => {
-                        setActiveTab(e.target.value);
-                      }}
-                    >
-                      回顧メモ
-                    </button>
-                  </div>
-                </div>
-                <div>
-                  {activeTab === "preMemo" && (
+                <TabComponent
+                  tabs={[
+                    { label: "予想メモ", value: "preMemo" },
+                    { label: "回顧メモ", value: "recoMemo" },
+                    { label: "その他", value: "other"}
+                  ]}
+                >
+                  <Tab tabValue={"preMemo"}>
                     <div>
                       <label className="mb-2 block text-2xl">予想メモ</label>
                       <input
@@ -277,8 +260,8 @@ export default function RacePage({ params }) {
                         onChange={(e) => setPreMemo(e.target.value)}
                       ></input>
                     </div>
-                  )}
-                  {activeTab === "recoMemo" && (
+                  </Tab>
+                  <Tab tabValue={"recoMemo"}>
                     <div>
                       <label className="mb-2 block text-2xl">反省メモ</label>
                       <input
@@ -288,8 +271,12 @@ export default function RacePage({ params }) {
                         onChange={(e) => setRecoMemo(e.target.value)}
                       ></input>
                     </div>
-                  )}
-                </div>
+                  </Tab>
+                  <Tab tabValue={"other"}>
+
+                  </Tab>
+                </TabComponent>
+
               </div>
               {/* ボタン */}
               <div className="flex gap-2">

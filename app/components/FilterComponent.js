@@ -47,7 +47,7 @@ export default function FilterComponent({ filterdRace, handleFilter, filtered, s
 
   return (
     <div className="mb-4">
-      <div className="mb-3">
+      <div>
         <div className="flex items-center justify-between gap-10 rounded-full border p-2">
           {/* 絞り込みフォーム */}
           <div className="flex w-full gap-2 divide-x divide-gray-600">

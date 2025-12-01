@@ -207,13 +207,8 @@ export default function Home() {
             </div>
           </div>
 
-          {/* 予想の追加 */}
-          <div className="mb-4">
-            <div className="flex gap-4 px-6"></div>
-          </div>
-
           {/* 入力フォーム
-        ------------------------------*/}
+          ------------------------------*/}
           {isRegistering && (
             <div className="fixed top-0 left-0 z-99 h-screen w-screen bg-black/50" onClick={() => setIsRegistering(!isRegistering)}>
               <div className="flex h-full items-center justify-center">
@@ -265,56 +260,83 @@ export default function Home() {
           )}
 
           {/* 予想一覧
-        ------------------------------*/}
-          <div className="px-6">
-            <div className="mb-4 flex justify-between gap-4">
-              <div className="flex w-full items-center border-l-4 border-l-amber-200 p-4">
-                <h2 className="text-2xl font-bold">予想一覧</h2>
-              </div>
-              {races.length !== 0 && isDeleting && (
-                <div className="flex w-full gap-4">
-                  <Button
-                    variant="red"
-                    size="full"
-                    onClick={() => {
-                      if (!confirm("すべての予想を削除しますか？")) return;
-                      localStorage.removeItem("races");
-                      setRaces([]);
-                    }}
-                  >
-                    すべて削除
-                  </Button>
-                  <Button
-                    variant="red"
-                    size="full"
-                    onClick={() => {
-                      handleDelete(selectedRaces);
-                    }}
-                  >
-                    選択した項目を削除
-                  </Button>
+          ------------------------------*/}
+          <div className="mb-6">
+            <div className="px-6">
+              <div className="mb-4 flex justify-between gap-4">
+                <div className="flex w-full items-center border-l-4 border-l-amber-200 p-4">
+                  <h2 className="text-2xl font-bold">予想一覧</h2>
                 </div>
-              )}
-            </div>
-            <FilterComponent
-              filterdRace={{
-                filteredVenue,
-                setFilteredVenue,
-                filteredField,
-                setFilteredField,
-                filteredDistance,
-                setFilteredDistance,
-              }}
-              handleFilter={handleFilter}
-              filtered={filtered}
-              setFiltered={setFiltered}
-            />
-            <div className="flex flex-col gap-2">
-              {races.length === 0 && <p className="text-center text-lg text-gray-800">予想がありません</p>}
-              {/* 各カード */}
-              {filtered ? (
-                filteredRaces.length !== 0 ? (
-                  filteredRaces
+                {races.length !== 0 && isDeleting && (
+                  <div className="flex w-full gap-4">
+                    <Button
+                      variant="red"
+                      size="full"
+                      onClick={() => {
+                        if (!confirm("すべての予想を削除しますか？")) return;
+                        localStorage.removeItem("races");
+                        setRaces([]);
+                      }}
+                    >
+                      すべて削除
+                    </Button>
+                    <Button
+                      variant="red"
+                      size="full"
+                      onClick={() => {
+                        handleDelete(selectedRaces);
+                      }}
+                    >
+                      選択した項目を削除
+                    </Button>
+                  </div>
+                )}
+              </div>
+              <FilterComponent
+                filterdRace={{
+                  filteredVenue,
+                  setFilteredVenue,
+                  filteredField,
+                  setFilteredField,
+                  filteredDistance,
+                  setFilteredDistance,
+                }}
+                handleFilter={handleFilter}
+                filtered={filtered}
+                setFiltered={setFiltered}
+              />
+              <div className="flex flex-col gap-4">
+                {races.length === 0 && <p className="text-center text-lg text-gray-800">予想がありません</p>}
+                {/* 各カード */}
+                {filtered ? (
+                  filteredRaces.length !== 0 ? (
+                    filteredRaces
+                      .slice()
+                      .reverse()
+                      .map((race) => (
+                        <Link href={`/race/${race.id}`} key={race.id}>
+                          <PredictionCard
+                            race={race}
+                            isDeleting={isDeleting}
+                            isChecked={selectedRaces.some((r) => r.id === race.id)}
+                            isSelected={() => {
+                              setSelectedRaces((prev) => {
+                                const alreadySelected = prev.some((r) => r.id === race.id);
+                                if (alreadySelected) {
+                                  return prev.filter((r) => r.id !== race.id);
+                                } else {
+                                  return [...prev, race];
+                                }
+                              });
+                            }}
+                          />
+                        </Link>
+                      ))
+                  ) : (
+                    <p className="text-center text-lg text-gray-800">条件に合う予想がありませんでした</p>
+                  )
+                ) : (
+                  races
                     .slice()
                     .reverse()
                     .map((race) => (
@@ -336,33 +358,8 @@ export default function Home() {
                         />
                       </Link>
                     ))
-                ) : (
-                  <p className="text-center text-lg text-gray-800">条件に合う予想がありませんでした</p>
-                )
-              ) : (
-                races
-                  .slice()
-                  .reverse()
-                  .map((race) => (
-                    <Link href={`/race/${race.id}`} key={race.id}>
-                      <PredictionCard
-                        race={race}
-                        isDeleting={isDeleting}
-                        isChecked={selectedRaces.some((r) => r.id === race.id)}
-                        isSelected={() => {
-                          setSelectedRaces((prev) => {
-                            const alreadySelected = prev.some((r) => r.id === race.id);
-                            if (alreadySelected) {
-                              return prev.filter((r) => r.id !== race.id);
-                            } else {
-                              return [...prev, race];
-                            }
-                          });
-                        }}
-                      />
-                    </Link>
-                  ))
-              )}
+                )}
+              </div>
             </div>
           </div>
         </div>

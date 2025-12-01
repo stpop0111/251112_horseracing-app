@@ -2,6 +2,7 @@
 
 import PredictionsForm from "./PredictionsForm";
 import Button from "./common/Button";
+import { TabComponent, Tab } from "./common/TabComponent";
 import CheckIcon from "./icons/CheckIcon";
 
 import gsap from "gsap";
@@ -102,36 +103,57 @@ export default function PredictionCard({ race, isDeleting, isSelected, isChecked
 
         {/* 予想 */}
         {race.predictions?.first?.frameColor && (
-        <div className="mb-4">
-          <ul className="flex gap-3 font-semibold">
-            {positions.map((pos) => (
-              <li key={pos.rank} className="inline-flex h-12 items-center gap-2 rounded-sm border px-3 py-2">
-                <span
-                  className={`inline-flex aspect-square h-full items-center justify-center rounded-full border text-sm ${pos.data.frameColor}`}
-                >
-                  {pos.data.frameNumber}
-                </span>
-                <span className="inline-block">{pos.data.horseName}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
+          <div className="mb-4">
+            <ul className="flex gap-3 font-semibold">
+              {positions.map((pos) => (
+                <li key={pos.rank} className="inline-flex h-12 items-center gap-2 rounded-sm border px-3 py-2">
+                  <span
+                    className={`inline-flex aspect-square h-full items-center justify-center rounded-full border text-sm ${pos.data.frameColor}`}
+                  >
+                    {pos.data.frameNumber}
+                  </span>
+                  <span className="inline-block">{pos.data.horseName}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
 
         {/* メモ */}
         <div className="mb-4">
+          <TabComponent
+            tabs={[
+              { label: "予想メモ", value: "preMemo" },
+              { label: "回顧メモ", value: "recoMemo" },
+            ]}
+          >
+            <Tab tabValue={"preMemo"}>
+              {race.preMemo ? (
+                <>
+                  <p className="mb-2 text-lg font-semibold">予想メモ</p>
+                  <p className="rounded-lg border p-2">{race.preMemo}</p>
+                </>
+              ) : (
+                <>
+                  <p>メモがありません</p>
+                </>
+              )}
+            </Tab>
+            <Tab tabValue={"recoMemo"}>
+              {race.recoMemo ? (
+                <>
+                  <p className="mb-2 text-lg font-semibold">回顧メモ</p>
+                  <p className="rounded-lg border p-2">{race.recoMemo}</p>
+                </>
+              ) : (
+                <>
+                  <p>メモがありません</p>
+                </>
+              )}
+            </Tab>
+          </TabComponent>
 
-        { race.preMemo ? (
-          <>
-          <p className="mb-2 text-lg font-semibold">予想メモ</p>
-          <p className="rounded-lg border p-2">{race.preMemo}</p>
-          </>
-        ) : (
-          <>
-          <p>メモがありません</p>
-          </>
-        ) }
-        </div>          
+        </div>
 
         <div>
           <p className="text-sm text-gray-800">作成日：{race.createdAt}</p>
