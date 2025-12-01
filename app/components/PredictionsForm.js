@@ -7,6 +7,19 @@ import { raceOptions } from "../data/raceOptions";
 export default function PredictionsForm({ raceInfo, editingID }) {
   const formInfo = [
     {
+      label: "レース名",
+      value: raceInfo.raceName,
+      onChange: raceInfo.setRaceName,
+      type: "text",
+    },
+    {
+      label: "グレード",
+      value: raceInfo.raceRank,
+      onChange: raceInfo.setRaceRank,
+      type: "select",
+      options: raceOptions.raceRank,
+    },
+    {
       label: "レース会場",
       value: raceInfo.venue,
       onChange: raceInfo.setVenue,

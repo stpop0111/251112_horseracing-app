@@ -17,6 +17,7 @@ export default function Home() {
   // レース一覧の状態管理
   const [races, setRaces] = useState([]); // 予想一覧
   const [raceName, setRaceName] = useState(""); // レース名
+  const [raceRank, setRaceRank] = useState("") // レースのランク
   const [venue, setVenue] = useState(""); // 会場
   const [raceNumber, setRaceNumber] = useState(""); // レース番号
   const [field, setField] = useState(""); // レース場
@@ -67,6 +68,7 @@ export default function Home() {
     const newRace = {
       id: newID,
       raceName: raceName, // レース名
+      raceRank: raceRank, // レースのランク
       venue: venue, // 会場
       raceNumber: raceNumber, // レース番号
       field: field, // レース場
@@ -90,6 +92,8 @@ export default function Home() {
     alert("予想を編集しました"); // TODO:モーダル表示にしてデザイン性を高める
 
     // フォームのリセット
+    setRaceName("");
+    setRaceRank("");
     setVenue("");
     setRaceNumber("");
     setField("");
@@ -111,9 +115,7 @@ export default function Home() {
     const savedRaces = JSON.parse(localStorage.getItem("races"));
 
     // 選択されたレース情報を配列の各オブジェクトで照合し、”それ以外の配列(updatedRaces)”を作成
-    const updatedRaces = savedRaces.filter(
-      (race) => !selectedRaces.some((selectedRace) => selectedRace.id === race.id),
-    );
+    const updatedRaces = savedRaces.filter((race) => !selectedRaces.some((selectedRace) => selectedRace.id === race.id));
 
     localStorage.setItem("races", JSON.stringify(updatedRaces)); // ローカルストレージに上書きした配列を保存
 
@@ -213,28 +215,27 @@ export default function Home() {
           {/* 入力フォーム
         ------------------------------*/}
           {isRegistering && (
-            <div
-              className="fixed top-0 left-0 z-99 h-screen w-screen bg-black/50"
-              onClick={() => setIsRegistering(!isRegistering)}
-            >
+            <div className="fixed top-0 left-0 z-99 h-screen w-screen bg-black/50" onClick={() => setIsRegistering(!isRegistering)}>
               <div className="flex h-full items-center justify-center">
                 <form
                   onSubmit={handleSubmit}
                   className="mb-6 rounded-xl border-2 border-gray-200 bg-gray-100 p-6 drop-shadow-lg"
                   onClick={(e) => e.stopPropagation()}
                 >
-                  <h2 className="mb-4 border-l-4 border-l-green-500 pl-2 text-2xl font-bold">
-                    登録フォーム
-                  </h2>
+                  <h2 className="mb-4 border-l-4 border-l-green-500 pl-2 text-2xl font-bold">登録フォーム</h2>
+                  {/* prettier-ignore */}
                   <PredictionsForm 
                   raceInfo={
-                    {venue,setVenue,
-                    raceNumber,setRaceNumber,
-                    field,setField,
-                    surface,setSurface,
-                    distance,setDistance,
-                    weather,setWeather,
-                    horseNumber,setHorseNumber,
+                    {
+                    raceName, setRaceName,
+                    raceRank, setRaceRank,
+                    venue, setVenue,
+                    raceNumber, setRaceNumber,
+                    field, setField,
+                    surface, setSurface,
+                    distance, setDistance,
+                    weather, setWeather,
+                    horseNumber, setHorseNumber,
                     }}/>
                   <div className="flex gap-2">
                     <Button variant="green" size="sml" type="submit" onClick={handleSubmit}>
@@ -244,6 +245,8 @@ export default function Home() {
                       variant="gray"
                       size="sml"
                       onClick={() => {
+                        setRaceName("");
+                        setRaceRank("");
                         setVenue("");
                         setRaceNumber("");
                         setField("");
@@ -306,10 +309,8 @@ export default function Home() {
               filtered={filtered}
               setFiltered={setFiltered}
             />
-            <div className="flex flex-col gap-2 overflow-x-hidden">
-              {races.length === 0 && (
-                <p className="text-center text-lg text-gray-800">予想がありません</p>
-              )}
+            <div className="flex flex-col gap-2">
+              {races.length === 0 && <p className="text-center text-lg text-gray-800">予想がありません</p>}
               {/* 各カード */}
               {filtered ? (
                 filteredRaces.length !== 0 ? (
@@ -336,9 +337,7 @@ export default function Home() {
                       </Link>
                     ))
                 ) : (
-                  <p className="text-center text-lg text-gray-800">
-                    条件に合う予想がありませんでした
-                  </p>
+                  <p className="text-center text-lg text-gray-800">条件に合う予想がありませんでした</p>
                 )
               ) : (
                 races

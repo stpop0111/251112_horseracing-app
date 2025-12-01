@@ -26,12 +26,10 @@ export default function StatsCard({ title, stat, color, changeRate }) {
     },
     gray: {
       border: "border-gray-300",
-      bg: "bg-gray-700/10",
+      bg: "bg-gray-300/10",
       text: "text-gray-700",
     },
   };
-
-  console.log(changeRate);
 
   const colors = colorClasses[color] || colorClasses.yellow;
 

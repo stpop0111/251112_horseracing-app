@@ -1,7 +1,7 @@
 {
   "plugins": ["prettier-plugin-tailwindcss"],
   "jsxBracketSameLine": false,
-  "printWidth": 100,
+  "printWidth": 140,
   "overrides": [
     {
       "files": "*.{js,jsx,ts,tsx}",

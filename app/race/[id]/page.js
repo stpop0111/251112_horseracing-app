@@ -11,9 +11,9 @@ export default function RacePage({ params }) {
 
   // 予想カードの状態関数
   const [predictions, setPredictions] = useState({
-    first: { horseName: "", frameNumber: "" },
-    second: { horseName: "", frameNumber: "" },
-    third: { horseName: "", frameNumber: "" },
+    first: { horseName: "", frameNumber: "", frameColor: "" },
+    second: { horseName: "", frameNumber: "", frameColor: "" },
+    third: { horseName: "", frameNumber: "", frameColor: "" },
   });
 
   const [preMemo, setPreMemo] = useState(""); // 予想メモ
@@ -30,7 +30,7 @@ export default function RacePage({ params }) {
     setRaceData(selectedRace); // 状態関数にレース情報を保存
 
     // レースの情報がある時、状態関数にその値を代入
-    if (selectedRace?.predictions?.first) { 
+    if (selectedRace?.predictions?.first) {
       setPredictions(selectedRace.predictions); // 予想
       setPreMemo(selectedRace.preMemo || ""); // 予想メモ
       setRecoMemo(selectedRace.recoMemo || ""); // 回顧メモ
@@ -41,7 +41,6 @@ export default function RacePage({ params }) {
     入力された文字列の変更の時
   ------------------------------------ */
   const handleChange = (position, field, value) => {
-
     // 引数に「順位」「キー」「値」を受け取る
     setPredictions({
       ...predictions,
@@ -99,6 +98,11 @@ export default function RacePage({ params }) {
     馬番による色変更
   ------------------------------------ */
   const getFrameColor = (frameNumber) => {
+    const num = Number(frameNumber); // 馬番を数値に変換
+    const horseNum = Number(raceData.horseNumber); // 頭数を数値に変換
+
+    if (!num || num < 1) return "bg-gray-200 text-black"; // 無効な値
+
     const colors = {
       1: "bg-white text-black",
       2: "bg-black text-white",
@@ -111,29 +115,29 @@ export default function RacePage({ params }) {
     };
 
     // 8頭以下のとき...そのまま返す
-    if (raceData.horseNumber <= 8) {
-      return colors[frameNumber];
+    if (horseNum <= 8) {
+      return colors[num] || "bg-gray-200 text-black";
     }
 
     // 9~16頭のとき...2頭で割る
-    if (raceData.horseNumber <= 16) {
-      return colors[Math.ceil(frameNumber / 2)];
+    if (horseNum <= 16) {
+      return colors[Math.ceil(num / 2)] || "bg-gray-200 text-black";
     }
 
     // 17頭立ての時...1 / 2枠が3頭残りは2頭ずつ
-    if (raceData.horseNumber === 17) {
-      if (frameNumber <= 3) return colors[1];
-      return colors[Math.ceil((frameNumber - 3) / 2) + 1];
+    if (horseNum === 17) {
+      if (num <= 3) return colors[1];
+      return colors[Math.ceil((num - 3) / 2) + 1] || "bg-gray-200 text-black";
     }
 
-    // 18頭建の時...1 / 2枠が3頭残りは2頭ずつ
-    if (raceData.horseNumber === 18) {
-      if (frameNumber <= 3) return colors[1];
-      if (frameNumber <= 6) return colors[2];
-      return colors[Math.ceil((frameNumber - 6) / 2) + 1];
+    // 18頭立ての時...1 / 2枠が3頭残りは2頭ずつ
+    if (horseNum === 18) {
+      if (num <= 3) return colors[1];
+      if (num <= 6) return colors[2];
+      return colors[Math.ceil((num - 6) / 2) + 2] || "bg-gray-200 text-black";
     }
 
-    return "bg-gray-200"; // デフォルト
+    return "bg-gray-200 text-black"; // デフォルト
   };
 
   return (
@@ -146,9 +150,7 @@ export default function RacePage({ params }) {
               <ul className="flex items-center gap-2">
                 <li className="text-2xl font-bold">
                   {raceData.venue}
-                  <span className="ml-1 bg-green-600 p-2 text-gray-50">
-                    {raceData.raceNumber}R
-                  </span>
+                  <span className="ml-1 bg-green-600 p-2 text-gray-50">{raceData.raceNumber}R</span>
                 </li>
                 <li>
                   {raceData.field}：{raceData.distance}m【{raceData.surface}】
@@ -164,9 +166,7 @@ export default function RacePage({ params }) {
 
             {/* 将来モデルを置く場所 */}
             <div className="mb-6 h-[540px] w-full rounded-xl border border-gray-100">
-              <div className="flex h-full w-full items-center justify-center">
-                モデルが入る
-              </div>
+              <div className="flex h-full w-full items-center justify-center">モデルが入る</div>
             </div>
 
             {/* 予想メモ */}
@@ -181,6 +181,7 @@ export default function RacePage({ params }) {
                         value={predictions.first.frameNumber}
                         onChange={(e) => {
                           handleChange("first", "frameNumber", e.target.value);
+                          handleChange("first", "frameColor", getFrameColor(predictions.first.frameNumber));
                         }}
                         type="number"
                         max={raceData.horseNumber}
@@ -188,9 +189,7 @@ export default function RacePage({ params }) {
                       ></input>
                       <input
                         value={predictions.first.horseName}
-                        onChange={(e) =>
-                          handleChange("first", "horseName", e.target.value)
-                        }
+                        onChange={(e) => handleChange("first", "horseName", e.target.value)}
                         type="text"
                         className="w-full rounded-r-xl border border-l-0 px-2 outline-none"
                       ></input>
@@ -203,6 +202,7 @@ export default function RacePage({ params }) {
                         value={predictions.second.frameNumber}
                         onChange={(e) => {
                           handleChange("second", "frameNumber", e.target.value);
+                          handleChange("second", "frameColor", getFrameColor(predictions.second.frameNumber));
                         }}
                         type="number"
                         max={raceData.horseNumber}
@@ -210,9 +210,7 @@ export default function RacePage({ params }) {
                       ></input>
                       <input
                         value={predictions.second.horseName}
-                        onChange={(e) =>
-                          handleChange("second", "horseName", e.target.value)
-                        }
+                        onChange={(e) => handleChange("second", "horseName", e.target.value)}
                         type="text"
                         className="w-full rounded-r-xl border border-l-0 px-2 outline-none"
                       ></input>
@@ -225,6 +223,7 @@ export default function RacePage({ params }) {
                         value={predictions.third.frameNumber}
                         onChange={(e) => {
                           handleChange("third", "frameNumber", e.target.value);
+                          handleChange("third", "frameColor", getFrameColor(predictions.third.frameNumber));
                         }}
                         type="number"
                         max={raceData.horseNumber}
@@ -232,9 +231,7 @@ export default function RacePage({ params }) {
                       ></input>
                       <input
                         value={predictions.third.horseName}
-                        onChange={(e) =>
-                          handleChange("third", "horseName", e.target.value)
-                        }
+                        onChange={(e) => handleChange("third", "horseName", e.target.value)}
                         type="text"
                         className="w-full rounded-r-xl border border-l-0 px-2 outline-none"
                       ></input>
@@ -246,10 +243,7 @@ export default function RacePage({ params }) {
               {/* メモ */}
               <div className="mb-6">
                 <div className="mb-4">
-                  <div
-                    className="flex justify-center gap-4 rounded-xl bg-gray-200 p-2"
-                    ref={tabContainerRef}
-                  >
+                  <div className="flex justify-center gap-4 rounded-xl bg-gray-200 p-2" ref={tabContainerRef}>
                     <button
                       className="tab flex w-full items-center justify-center rounded-lg bg-neutral-50 p-4 font-bold text-gray-600 shadow-lg"
                       value="preMemo"
