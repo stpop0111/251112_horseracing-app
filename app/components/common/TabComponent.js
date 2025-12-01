@@ -23,11 +23,6 @@ export function TabComponent({ tabs, children }) {
           activeElement.current.style.left = `${relativeLeft}px`;
           activeElement.current.style.top = `${relativeTop}px`;
           activeElement.current.style.height = `${rect.height}px`;
-          tab.classList.add("text-gray-900"); // activeTabに入っている値と押されたボタンの値が一致している場合にクラスを付与する
-          tab.classList.remove("text-gray-400"); // activeTabに入っている値と押されたボタンの値が一致している場合にクラスを付与する
-        } else {
-          tab.classList.remove("text-gray-900"); // activeTabに入っている値と押されたボタンの値が一致している場合にクラスを付与する
-          tab.classList.add("text-gray-400"); // activeTabに入っている値と押されたボタンの値が一致している場合にクラスを付与する
         }
       });
     };
@@ -47,7 +42,9 @@ export function TabComponent({ tabs, children }) {
         <div className="relative flex justify-center gap-4 rounded-xl bg-gray-200 p-2" ref={tabContainerRef}>
           {tabs.map((tab) => (
             <button
-              className="tab relative z-10 flex w-full items-center justify-center p-4 font-bold transition-all duration-300 ease-[cubic-bezier(0,.70,.70,1)]"
+              className={`tab relative z-10 flex w-full items-center justify-center p-4 font-bold transition-all duration-300 ease-[cubic-bezier(0,.70,.70,1)] ${tab.value === activeTab 
+                ? "text-gray-900"
+                : "text-gray-400"}`}
               type="button"
               key={tab.value}
               value={tab.value}
