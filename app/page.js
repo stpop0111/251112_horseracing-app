@@ -9,6 +9,7 @@ import Button from "./components/common/Button";
 import PageWrapper from "./components/common/PageWrapper";
 import FilterComponent from "./components/FilterComponent";
 import StatsCard from "./components/StatsCard";
+import { TabComponent, Tab } from "./components/common/TabComponent";
 
 export default function Home() {
   /* ------------------------------------
@@ -17,7 +18,7 @@ export default function Home() {
   // レース一覧の状態管理
   const [races, setRaces] = useState([]); // 予想一覧
   const [raceName, setRaceName] = useState(""); // レース名
-  const [raceRank, setRaceRank] = useState("") // レースのランク
+  const [raceRank, setRaceRank] = useState(""); // レースのランク
   const [venue, setVenue] = useState(""); // 会場
   const [raceNumber, setRaceNumber] = useState(""); // レース番号
   const [field, setField] = useState(""); // レース場
@@ -164,6 +165,18 @@ export default function Home() {
     }
   };
 
+  /* ------------------------------------ 
+    絞り込み
+  ------------------------------------ */
+  const handleTabChange = (tabValue) => {
+    if (tabValue === "all") {
+      setFiltered(false);
+      return;
+    }
+    setFiltered(true);
+    setFilteredRaces(races.filter((race) => race.venue === tabValue));
+  };
+
   return (
     <PageWrapper>
       <div className="w-6xl">
@@ -305,6 +318,16 @@ export default function Home() {
                 filtered={filtered}
                 setFiltered={setFiltered}
               />
+
+              {/* 切り替え表示用のタブ */}
+              <TabComponent
+                tabs={[
+                  { value: "all", label: "全て" },
+                  ...[...new Set(races.map((race) => race.venue))].map((venue) => ({ value: venue, label: venue })),
+                ]}
+                onTabChange={handleTabChange}
+              ></TabComponent>
+
               <div className="flex flex-col gap-4">
                 {races.length === 0 && <p className="text-center text-lg text-gray-800">予想がありません</p>}
                 {/* 各カード */}

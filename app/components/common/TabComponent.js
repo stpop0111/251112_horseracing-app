@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-export function TabComponent({ tabs, children }) {
+export function TabComponent({ tabs, children, onTabChange }) {
   /* ------------------------------------
       タブ切り替え
     ------------------------------------ */
@@ -34,7 +34,7 @@ export function TabComponent({ tabs, children }) {
     return () => {
       window.removeEventListener("resize", activeTabButton);
     };
-  }, [activeTab]); // 表示されているタブの情報が変わるたびにマウントされる
+  }, [activeTab, tabs]); // 表示されているタブの情報が変わるたびにマウントされる
 
   return (
     <>
@@ -42,15 +42,16 @@ export function TabComponent({ tabs, children }) {
         <div className="relative flex justify-center gap-4 rounded-xl bg-gray-200 p-2" ref={tabContainerRef}>
           {tabs.map((tab) => (
             <button
-              className={`tab relative z-10 flex w-full items-center justify-center p-4 font-bold transition-all duration-300 ease-[cubic-bezier(0,.70,.70,1)] ${tab.value === activeTab 
-                ? "text-gray-900"
-                : "text-gray-400"}`}
+              className={`tab relative z-10 flex w-full items-center justify-center p-4 font-bold transition-all duration-300 ease-[cubic-bezier(0,.70,.70,1)] ${
+                tab.value === activeTab ? "text-gray-900" : "text-gray-400"
+              }`}
               type="button"
               key={tab.value}
               value={tab.value}
               onClick={(e) => {
                 e.preventDefault();
                 setActiveTab(e.target.value);
+                onTabChange(e.target.value);
               }}
             >
               {tab.label}

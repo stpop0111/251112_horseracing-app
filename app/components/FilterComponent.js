@@ -79,26 +79,28 @@ export default function FilterComponent({ filterdRace, handleFilter, filtered, s
 
       {/* 絞り込み表示カード */}
       {filtered && (
-        <div className="flex gap-2">
-          {filterCards.map(
-            (filterCard) =>
-              filterCard.value && (
-                <div
-                  key={filterCard.value}
-                  className="h-8 text-sm inline-flex cursor-pointer items-center gap-4 rounded-full border px-2 py-2 transition-colors hover:bg-gray-900 hover:text-gray-50"
-                  onClick={() => {
-                    filterCard.onReset();
-                    setFiltered(false);
-                  }}
-                >
-                  {filterCard.value}
-                  {filterCard.suffix}
-                  <div className="h-full">
-                    <CrossIcon />
+        <div className="mt-3">
+          <div className="flex gap-2">
+            {filterCards.map(
+              (filterCard) =>
+                filterCard.value && (
+                  <div
+                    key={filterCard.value}
+                    className="h-8 text-sm inline-flex cursor-pointer items-center gap-4 rounded-lg border px-2 py-2 transition-colors hover:bg-gray-900 hover:text-gray-50"
+                    onClick={() => {
+                      filterCard.onReset();
+                      setFiltered(false);
+                    }}
+                  >
+                    {filterCard.value}
+                    {filterCard.suffix}
+                    <div className="h-full">
+                      <CrossIcon />
+                    </div>
                   </div>
-                </div>
-              ),
-          )}
+                ),
+            )}
+          </div>
         </div>
       )}
     </div>
