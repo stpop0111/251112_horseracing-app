@@ -168,13 +168,67 @@ export default function Home() {
   /* ------------------------------------ 
     絞り込み
   ------------------------------------ */
-  const handleTabChange = (tabValue) => {
+  const handleTabChange = (tabValue, key) => {
+    // 絞り込み項目”全て”の場合は終了
     if (tabValue === "all") {
-      setFiltered(false);
+      const filteredValue = {
+        venue: key === "venue" ? "" : filteredVenue, // ← "all" なら空文字
+        field: key === "field" ? "" : filteredField,
+        distance: key === "distance" ? "" : filteredDistance,
+      };
+
+      if (key === "venue") {
+        setFilteredVenue("");
+      }
+      if (key === "field") {
+        setFilteredField("");
+      }
+      if (key === "distance") {
+        setFilteredDistance("");
+      }
+      if (!filteredValue.venue && !filteredValue.field && !filteredValue.distance) {
+        setFiltered(false);
+        return;
+      }
+
+      setFilteredRaces(
+        races.filter(
+          (race) =>
+            (filteredValue.venue === "" || race.venue === filteredValue.venue) &&
+            (filteredValue.field === "" || race.field === filteredValue.field) &&
+            (filteredValue.distance === "" || race.distance === filteredValue.distance),
+        ),
+      );
       return;
     }
+
+    // 絞り込み設定
+    const filteredValue = {
+      venue: key === "venue" ? tabValue : filteredVenue,
+      field: key === "field" ? tabValue : filteredField,
+      distance: key === "distance" ? tabValue : filteredDistance,
+    };
+
+    //
     setFiltered(true);
-    setFilteredRaces(races.filter((race) => race.venue === tabValue));
+    if (key === "venue") {
+      setFilteredVenue(tabValue);
+    }
+    if (key === "field") {
+      setFilteredField(tabValue);
+    }
+    if (key === "distance") {
+      setFilteredDistance(tabValue);
+    }
+
+    setFilteredRaces(
+      races.filter(
+        (race) =>
+          (filteredValue.venue === "" || race.venue === filteredValue.venue) &&
+          (filteredValue.field === "" || race.field === filteredValue.field) &&
+          (filteredValue.distance === "" || race.distance === filteredValue.distance),
+      ),
+    );
   };
 
   return (
@@ -326,6 +380,28 @@ export default function Home() {
                   ...[...new Set(races.map((race) => race.venue))].map((venue) => ({ value: venue, label: venue })),
                 ]}
                 onTabChange={handleTabChange}
+                size="mid"
+                filterKey={"venue"}
+              ></TabComponent>
+
+              <TabComponent
+                tabs={[
+                  { value: "all", label: "全て" },
+                  ...[...new Set(races.map((race) => race.field))].map((field) => ({ value: field, label: field })),
+                ]}
+                onTabChange={handleTabChange}
+                size="mid"
+                filterKey={"field"}
+              ></TabComponent>
+
+              <TabComponent
+                tabs={[
+                  { value: "all", label: "全て" },
+                  ...[...new Set(races.map((race) => race.distance))].map((distance) => ({ value: distance, label: distance })),
+                ]}
+                onTabChange={handleTabChange}
+                size="mid"
+                filterKey={"distance"}
               ></TabComponent>
 
               <div className="flex flex-col gap-4">

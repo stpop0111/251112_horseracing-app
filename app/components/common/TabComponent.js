@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-export function TabComponent({ tabs, children, onTabChange }) {
+export function TabComponent({ tabs, children, onTabChange, size="mid", filterKey }) {
   /* ------------------------------------
       タブ切り替え
     ------------------------------------ */
@@ -36,13 +36,26 @@ export function TabComponent({ tabs, children, onTabChange }) {
     };
   }, [activeTab, tabs]); // 表示されているタブの情報が変わるたびにマウントされる
 
+  const containrStyle = {
+    sml: "w-[70%] p-1",
+    mld: "w-full p-2"
+  }
+
+  const tabStyle = {
+    sml: "py-2",
+    mid: "py-4"
+  }
+
   return (
     <>
       <div className="mb-4">
-        <div className="relative flex justify-center gap-4 rounded-xl bg-gray-200 p-2" ref={tabContainerRef}>
+        <div 
+        className={`relative flex justify-center gap-4 rounded-xl bg-gray-200 p-2 ${containrStyle[size]}`}
+        ref={tabContainerRef}>
           {tabs.map((tab) => (
             <button
-              className={`tab relative z-10 flex w-full items-center justify-center p-4 font-bold transition-all duration-300 ease-[cubic-bezier(0,.70,.70,1)] ${
+              className={`tab relative z-10 flex w-full items-center justify-center font-bold transition-all duration-300 ease-[cubic-bezier(0,.70,.70,1)] ${tabStyle[size]}
+              ${
                 tab.value === activeTab ? "text-gray-900" : "text-gray-400"
               }`}
               type="button"
@@ -51,7 +64,7 @@ export function TabComponent({ tabs, children, onTabChange }) {
               onClick={(e) => {
                 e.preventDefault();
                 setActiveTab(e.target.value);
-                onTabChange(e.target.value);
+                onTabChange && onTabChange(e.target.value, filterKey);
               }}
             >
               {tab.label}
