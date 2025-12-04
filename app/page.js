@@ -7,7 +7,6 @@ import PredictionsForm from "./components/PredictionsForm";
 import PredictionCard from "./components/PredictionCard";
 import Button from "./components/common/Button";
 import PageWrapper from "./components/common/PageWrapper";
-import FilterComponent from "./components/FilterComponent";
 import StatsCard from "./components/StatsCard";
 import { TabComponent, Tab } from "./components/common/TabComponent";
 
@@ -359,19 +358,6 @@ export default function Home() {
                   </div>
                 )}
               </div>
-              <FilterComponent
-                filterdRace={{
-                  filteredVenue,
-                  setFilteredVenue,
-                  filteredField,
-                  setFilteredField,
-                  filteredDistance,
-                  setFilteredDistance,
-                }}
-                handleFilter={handleFilter}
-                filtered={filtered}
-                setFiltered={setFiltered}
-              />
 
               {/* 切り替え表示用のタブ */}
               <TabComponent
