@@ -247,7 +247,6 @@ export default function RacePage({ params }) {
                   tabs={[
                     { label: "予想メモ", value: "preMemo" },
                     { label: "回顧メモ", value: "recoMemo" },
-                    { label: "その他", value: "other"}
                   ]}
                 >
                   <Tab tabValue={"preMemo"}>

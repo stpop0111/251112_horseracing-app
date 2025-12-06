@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 
-export function TabComponent({ tabs, children, onTabChange, size="mid", filterKey }) {
+export function TabComponent({ tabs, children, onTabChange, size = "mid", filterKey }) {
   /* ------------------------------------
       タブ切り替え
     ------------------------------------ */
@@ -37,52 +37,49 @@ export function TabComponent({ tabs, children, onTabChange, size="mid", filterKe
   }, [activeTab, tabs]); // 表示されているタブの情報が変わるたびにマウントされる
 
   const containrStyle = {
-    sml: "w-[70%] p-1",
-    mld: "w-full p-2"
-  }
+    sml: "w-auto p-1",
+    mld: "w-full p-2",
+  };
 
   const tabStyle = {
-    sml: "py-2",
-    mid: "py-4"
-  }
+    sml: "py-2 w-24",
+    mid: "py-4 w-full",
+  };
 
   return (
     <>
-      <div className="mb-4">
-        <div 
-        className={`relative flex justify-center gap-4 rounded-xl bg-gray-200 p-2 ${containrStyle[size]}`}
-        ref={tabContainerRef}>
-          {tabs.map((tab) => (
-            <button
-              className={`tab relative z-10 flex w-full items-center justify-center font-bold transition-all duration-300 ease-[cubic-bezier(0,.70,.70,1)] ${tabStyle[size]}
-              ${
-                tab.value === activeTab ? "text-gray-900" : "text-gray-400"
-              }`}
-              type="button"
-              key={tab.value}
-              value={tab.value}
-              onClick={(e) => {
-                e.preventDefault();
-                setActiveTab(e.target.value);
-                onTabChange && onTabChange(e.target.value, filterKey);
-              }}
-            >
-              {tab.label}
-            </button>
-          ))}
-          <div
-            className="shado-lg absolute z-5 rounded-lg bg-neutral-50 transition-all duration-300 ease-[cubic-bezier(0,.70,.70,1)]"
-            ref={activeElement}
-          ></div>
+      <div className={`relative flex justify-center gap-4 rounded-xl bg-gray-200 p-2 ${containrStyle[size]}`} ref={tabContainerRef}>
+        {tabs.map((tab) => (
+          <button
+            className={`relative z-10 flex items-center justify-center font-bold transition-all duration-300 ease-[cubic-bezier(0,.70,.70,1)] ${tabStyle[size]} ${
+              tab.value === activeTab ? "text-gray-900" : "text-gray-400"
+            }`}
+            type="button"
+            key={tab.value}
+            value={tab.value}
+            onClick={(e) => {
+              e.preventDefault();
+              setActiveTab(e.target.value);
+              onTabChange && onTabChange(e.target.value, filterKey);
+            }}
+          >
+            {tab.label}
+          </button>
+        ))}
+        <div
+          className="shado-lg absolute z-5 rounded-lg bg-neutral-50 transition-all duration-300 ease-[cubic-bezier(0,.70,.70,1)]"
+          ref={activeElement}
+        ></div>
+      </div>
+      {children && (
+        <div className="mt-4">
+          {Array.isArray(children)
+            ? children.find((child) => child.props.tabValue === activeTab)
+            : children?.props?.tabValue === activeTab
+              ? children
+              : null}
         </div>
-      </div>
-      <div>
-        {Array.isArray(children)
-          ? children.find((child) => child.props.tabValue === activeTab)
-          : children?.props?.tabValue === activeTab
-            ? children
-            : null}
-      </div>
+      )}
     </>
   );
 }

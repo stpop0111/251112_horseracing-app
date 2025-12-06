@@ -121,38 +121,39 @@ export default function PredictionCard({ race, isDeleting, isSelected, isChecked
 
         {/* メモ */}
         <div className="mb-4">
-          <TabComponent
-            tabs={[
-              { label: "予想メモ", value: "preMemo" },
-              { label: "回顧メモ", value: "recoMemo" },
-            ]}
-          >
-            <Tab tabValue={"preMemo"}>
-              {race.preMemo ? (
-                <>
-                  <p className="mb-2 text-lg font-semibold">予想メモ</p>
-                  <p className="rounded-lg border p-2">{race.preMemo}</p>
-                </>
-              ) : (
-                <>
-                  <p>メモがありません</p>
-                </>
-              )}
-            </Tab>
-            <Tab tabValue={"recoMemo"}>
-              {race.recoMemo ? (
-                <>
-                  <p className="mb-2 text-lg font-semibold">回顧メモ</p>
-                  <p className="rounded-lg border p-2">{race.recoMemo}</p>
-                </>
-              ) : (
-                <>
-                  <p>メモがありません</p>
-                </>
-              )}
-            </Tab>
-          </TabComponent>
-
+          {(race.preMemo || race.recoMemo) && (
+              <TabComponent
+                tabs={[
+                  { label: "予想メモ", value: "preMemo" },
+                  { label: "回顧メモ", value: "recoMemo" },
+                ]}
+              >
+                <Tab tabValue={"preMemo"}>
+                  {race.preMemo ? (
+                    <>
+                      <p className="mb-2 text-lg font-semibold">予想メモ</p>
+                      <p className="rounded-lg border p-2">{race.preMemo}</p>
+                    </>
+                  ) : (
+                    <>
+                      <p>メモがありません</p>
+                    </>
+                  )}
+                </Tab>
+                <Tab tabValue={"recoMemo"}>
+                  {race.recoMemo ? (
+                    <>
+                      <p className="mb-2 text-lg font-semibold">回顧メモ</p>
+                      <p className="rounded-lg border p-2">{race.recoMemo}</p>
+                    </>
+                  ) : (
+                    <>
+                      <p>メモがありません</p>
+                    </>
+                  )}
+                </Tab>
+              </TabComponent>
+            )}
         </div>
 
         <div>
