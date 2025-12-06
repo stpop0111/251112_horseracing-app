@@ -6,6 +6,9 @@ import Link from "next/link";
 import Button from "@/app/components/common/Button";
 import PageWrapper from "@/app/components/common/PageWrapper";
 import { TabComponent, Tab } from "@/app/components/common/TabComponent";
+import CheckIcon from "@/app/components/icons/CheckIcon";
+import CrossIcon from "@/app/components/icons/CrossIcon";
+import ChangeButton from "@/app/components/common/ChangeButton";
 
 export default function RacePage({ params }) {
   const [raceData, setRaceData] = useState(null);
@@ -19,6 +22,7 @@ export default function RacePage({ params }) {
 
   const [preMemo, setPreMemo] = useState(""); // 予想メモ
   const [recoMemo, setRecoMemo] = useState(""); // 反省メモ
+  const [hitStatus, setHitStatus] = useState(""); // 的中状況
 
   const param = use(params);
 
@@ -35,6 +39,7 @@ export default function RacePage({ params }) {
       setPredictions(selectedRace.predictions); // 予想
       setPreMemo(selectedRace.preMemo || ""); // 予想メモ
       setRecoMemo(selectedRace.recoMemo || ""); // 回顧メモ
+      setHitStatus(selectedRace.hitStatus || ""); // 的中状況
     }
   }, []);
 
@@ -42,14 +47,18 @@ export default function RacePage({ params }) {
     入力された文字列の変更の時
   ------------------------------------ */
   const handleChange = (position, field, value) => {
-    // 引数に「順位」「キー」「値」を受け取る
+    const updatedPosition = {
+      ...predictions[position],
+      [field]: value,
+    };
+
+    if (field === "frameNumber") {
+      updatedPosition.frameColor = getFrameColor(value);
+    }
+
     setPredictions({
       ...predictions,
-      [position]: {
-        ...predictions[position],
-        [field]: value,
-      },
-      // 予想の状態関数にて引数で受け取ったキーと値を相当する順位にて代入する
+      [position]: updatedPosition,
     });
   };
 
@@ -68,6 +77,7 @@ export default function RacePage({ params }) {
       predictions: predictions, // 予想を状態変数から取得
       preMemo: preMemo, // 予想メモを状態変数から取得
       recoMemo: recoMemo, // 回顧メモを状態変数から取得
+      hitStatus: hitStatus, // 的中状況を状態変数から取得
     };
 
     localStorage.setItem("races", JSON.stringify(saved)); // 上書きしたデータをローカルストレージにそのまま上書き
@@ -173,7 +183,54 @@ export default function RacePage({ params }) {
             {/* 予想メモ */}
             <form onSubmit={handleSubmit}>
               <div className="mb-6">
-                <h2 className="mb-2 text-2xl">馬券内予想順位</h2>
+                <div className="mb-2 flex items-center justify-between">
+                  <h2 className="text-2xl">馬券内予想順位</h2>
+                  {/* 的中状況 */}
+                  {/* <TabComponent
+                    tabs={[
+                      {
+                        label: <CheckIcon />,
+                        value: "hit",
+                        activeColor: "text-green-800",
+                        activeBg: "bg-green-200",
+                        style: "square"
+                      },
+                      { label: "未確定", value: "pending" },
+                      {
+                        label: <CrossIcon />,
+                        value: "miss",
+                        activeColor: "text-red-800",
+                        activeBg: "bg-red-200",
+                        style: "square"
+                      },
+                    ]}
+                    defaultNumber={1}
+                    tabStyle="pill"
+                    className="h-16"
+                  ></TabComponent> */}
+
+                  <ChangeButton
+                    buttons={[
+                      {
+                        label: <CheckIcon />,
+                        value: "hit",
+                        color: "green-800",
+                        bg: "bg-green-200",
+                      },
+                      { label: "",
+                        value: "pending",
+                        color: "gray-800",
+                        bg: "bg-gray-100",
+                      },
+                      {
+                        label: <CrossIcon />,
+                        value: "miss",
+                        color: "red-800",
+                        bg: "bg-red-200",
+                      },
+                    ]}
+                  ></ChangeButton>
+                </div>
                 <ul className="flex gap-4">
                   <li>
                     <label>1位</label>
@@ -182,11 +239,10 @@ export default function RacePage({ params }) {
                         value={predictions.first.frameNumber}
                         onChange={(e) => {
                           handleChange("first", "frameNumber", e.target.value);
-                          handleChange("first", "frameColor", getFrameColor(predictions.first.frameNumber));
                         }}
                         type="number"
                         max={raceData.horseNumber}
-                        className={`aspect-square w-[30%] rounded-l-xl border border-gray-800 text-center text-xl font-bold caret-transparent transition-all duration-200 outline-none ${getFrameColor(predictions.first.frameNumber)}`}
+                        className={`aspect-square w-[30%] rounded-l-xl border border-gray-800 text-center text-xl font-bold transition-all duration-200 outline-none ${getFrameColor(predictions.first.frameNumber)}`}
                       ></input>
                       <input
                         value={predictions.first.horseName}
@@ -203,11 +259,10 @@ export default function RacePage({ params }) {
                         value={predictions.second.frameNumber}
                         onChange={(e) => {
                           handleChange("second", "frameNumber", e.target.value);
-                          handleChange("second", "frameColor", getFrameColor(predictions.second.frameNumber));
                         }}
                         type="number"
                         max={raceData.horseNumber}
-                        className={`aspect-square w-[30%] rounded-l-xl border border-gray-800 text-center text-xl font-bold caret-transparent transition-all duration-200 outline-none ${getFrameColor(predictions.second.frameNumber)}`}
+                        className={`aspect-square w-[30%] rounded-l-xl border border-gray-800 text-center text-xl font-bold transition-all duration-200 outline-none ${getFrameColor(predictions.second.frameNumber)}`}
                       ></input>
                       <input
                         value={predictions.second.horseName}
@@ -224,11 +279,10 @@ export default function RacePage({ params }) {
                         value={predictions.third.frameNumber}
                         onChange={(e) => {
                           handleChange("third", "frameNumber", e.target.value);
-                          handleChange("third", "frameColor", getFrameColor(predictions.third.frameNumber));
                         }}
                         type="number"
                         max={raceData.horseNumber}
-                        className={`aspect-square w-[30%] rounded-l-xl border border-gray-800 text-center text-xl font-bold caret-transparent transition-all duration-200 outline-none ${getFrameColor(predictions.third.frameNumber)}`}
+                        className={`aspect-square w-[30%] rounded-l-xl border border-gray-800 text-center text-xl font-bold transition-all duration-200 outline-none ${getFrameColor(predictions.third.frameNumber)}`}
                       ></input>
                       <input
                         value={predictions.third.horseName}
@@ -271,12 +325,10 @@ export default function RacePage({ params }) {
                       ></input>
                     </div>
                   </Tab>
-                  <Tab tabValue={"other"}>
-
-                  </Tab>
+                  <Tab tabValue={"other"}></Tab>
                 </TabComponent>
-
               </div>
+
               {/* ボタン */}
               <div className="flex gap-2">
                 <Button variant="green" type="submit" size="mid">

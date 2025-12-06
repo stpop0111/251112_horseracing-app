@@ -1,12 +1,23 @@
 import { useState, useEffect, useRef } from "react";
 
-export function TabComponent({ tabs, children, onTabChange, size = "mid", filterKey }) {
+export function TabComponent({ 
+  tabs, 
+  children, 
+  onTabChange, 
+  filterKey, 
+  defaultNumber = 0, 
+  tabStyle = "square",
+  size = "mid", 
+  className = "",
+}) {
+  
   /* ------------------------------------
-      タブ切り替え
-    ------------------------------------ */
-  const [activeTab, setActiveTab] = useState(tabs[0]?.value || ""); // 現在開いているメモの種類を保存する（デフォルト：予想メモ）
+    タブ切り替え
+  ------------------------------------ */
+  const [activeTab, setActiveTab] = useState(tabs[defaultNumber]?.value || ""); // 受け取った番号を最初にする
   const tabContainerRef = useRef(null); // CSSが切り替わる要素のコンテナをuseRefで宣言
   const activeElement = useRef(null);
+  const currentTab = tabs.find((tab) => tab.value === activeTab);
 
   useEffect(() => {
     if (!tabContainerRef.current) return; // DOMがない場合は強制終了
@@ -36,38 +47,52 @@ export function TabComponent({ tabs, children, onTabChange, size = "mid", filter
     };
   }, [activeTab, tabs]); // 表示されているタブの情報が変わるたびにマウントされる
 
-  const containrStyle = {
-    sml: "w-auto p-1",
-    mld: "w-full p-2",
-  };
 
-  const tabStyle = {
-    sml: "py-2 w-24",
-    mid: "py-4 w-full",
-  };
+  /* ------------------------------------
+    タブ切り替え
+  ------------------------------------ */
+  const animationStyle = {
+    strongEase: "transition-all duration-300 ease-[cubic-bezier(0,.70,.70,1)]"
+  }
+
+  const btnStyle = {
+    sml: "p-2",
+    mid: "p-4"
+  }
 
   return (
     <>
-      <div className={`relative flex justify-center gap-4 rounded-xl bg-gray-200 p-2 ${containrStyle[size]}`} ref={tabContainerRef}>
+      <div
+        className={`relative inline-flex justify-center gap-4 p-2 ${className} ${animationStyle["strongEase"]}
+          ${ tabStyle === "pill" ? "rounded-full" : "rounded-lg" }
+          ${ currentTab && currentTab.activeBg ? currentTab.activeBg : "bg-gray-100"}
+          
+        `}
+        ref={tabContainerRef}
+      >
         {tabs.map((tab) => (
-          <button
-            className={`relative z-10 flex items-center justify-center font-bold transition-all duration-300 ease-[cubic-bezier(0,.70,.70,1)] ${tabStyle[size]} ${
-              tab.value === activeTab ? "text-gray-900" : "text-gray-400"
-            }`}
-            type="button"
-            key={tab.value}
-            value={tab.value}
-            onClick={(e) => {
-              e.preventDefault();
-              setActiveTab(e.target.value);
-              onTabChange && onTabChange(e.target.value, filterKey);
-            }}
-          >
-            {tab.label}
-          </button>
+      <button
+        className={`relative z-10 inline-flex items-center justify-center font-bold ${animationStyle["strongEase"]}
+        ${ tab.value === activeTab ? tab.activeColor || "text-gray-900" : "text-gray-400" }
+        ${ tab.style === "square" ? "aspect-square" : "" }
+        ${ btnStyle[size] }
+        `}
+        type="button"
+        key={tab.value}
+        value={tab.value}
+        onClick={(e) => {
+          e.preventDefault();
+          setActiveTab(e.target.value);
+          onTabChange && onTabChange(e.target.value, filterKey);
+        }}
+      >
+        {tab.label}
+      </button>
         ))}
         <div
-          className="shado-lg absolute z-5 rounded-lg bg-neutral-50 transition-all duration-300 ease-[cubic-bezier(0,.70,.70,1)]"
+          className={`bg-neutral-50 absolute z-5 shadow-lg transition-all duration-300 ease-[cubic-bezier(0,.70,.70,1)]
+            ${ tabStyle === "pill" ? "rounded-full" : "rounded-lg" }
+            `}
           ref={activeElement}
         ></div>
       </div>

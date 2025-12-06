@@ -80,6 +80,7 @@ export default function Home() {
       createdAt: generateID("-", ":", " "), // 作成日時
       editedAt: "", // 編集日時
       isNew: true, // 新規追加フラグ
+      hitStatus: "pending" // 的中状況
     };
 
     console.log(newRace);
@@ -402,6 +403,7 @@ export default function Home() {
                       onTabChange={handleTabChange}
                       size="sml"
                       filterKey={"distance"}
+                      
                     ></TabComponent>
                   </li>
                 </ul>
