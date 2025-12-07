@@ -80,7 +80,7 @@ export default function Home() {
       createdAt: generateID("-", ":", " "), // 作成日時
       editedAt: "", // 編集日時
       isNew: true, // 新規追加フラグ
-      hitStatus: "pending" // 的中状況
+      hitStatus: "pending", // 的中状況
     };
 
     console.log(newRace);
@@ -361,53 +361,54 @@ export default function Home() {
               </div>
 
               {/* 切り替え表示用のタブ */}
-              <div className="mb-4">
-                <ul className="flex flex-col gap-2">
-                  <li className="flex items-center gap-1">
-                    <span className="min-w-[5%]">会場：</span>
-                    <TabComponent
-                      tabs={[
-                        { value: "all", label: "全て" },
-                        ...[...new Set(races.map((race) => race.venue))]
-                          .filter((venue) => venue !== "")
-                          .map((venue) => ({ value: venue, label: venue })),
-                      ]}
-                      onTabChange={handleTabChange}
-                      size="sml"
-                      filterKey={"venue"}
-                    ></TabComponent>
-                  </li>
-                  <li className="flex items-center gap-1">
-                    <span className="min-w-[5%]">馬場：</span>
-                    <TabComponent
-                      tabs={[
-                        { value: "all", label: "全て" },
-                        ...[...new Set(races.map((race) => race.field))]
-                          .filter((field) => field !== "")
-                          .map((field) => ({ value: field, label: field })),
-                      ]}
-                      onTabChange={handleTabChange}
-                      size="sml"
-                      filterKey={"field"}
-                    ></TabComponent>
-                  </li>
-                  <li className="flex items-center gap-1">
-                    <span className="min-w-[5%]">距離：</span>
-                    <TabComponent
-                      tabs={[
-                        { value: "all", label: "全て" },
-                        ...[...new Set(races.map((race) => race.distance))]
-                          .filter((distance) => distance !== "")
-                          .map((distance) => ({ value: distance, label: distance })),
-                      ]}
-                      onTabChange={handleTabChange}
-                      size="sml"
-                      filterKey={"distance"}
-                      
-                    ></TabComponent>
-                  </li>
-                </ul>
-              </div>
+              {races.length !== 0 && (
+                <div className="mb-4">
+                  <ul className="flex flex-col gap-2">
+                    <li className="flex items-center gap-1">
+                      <span className="min-w-[5%]">会場：</span>
+                      <TabComponent
+                        tabs={[
+                          { value: "all", label: "全て" },
+                          ...[...new Set(races.map((race) => race.venue))]
+                            .filter((venue) => venue !== "")
+                            .map((venue) => ({ value: venue, label: venue })),
+                        ]}
+                        onTabChange={handleTabChange}
+                        size="sml"
+                        filterKey={"venue"}
+                      ></TabComponent>
+                    </li>
+                    <li className="flex items-center gap-1">
+                      <span className="min-w-[5%]">馬場：</span>
+                      <TabComponent
+                        tabs={[
+                          { value: "all", label: "全て" },
+                          ...[...new Set(races.map((race) => race.field))]
+                            .filter((field) => field !== "")
+                            .map((field) => ({ value: field, label: field })),
+                        ]}
+                        onTabChange={handleTabChange}
+                        size="sml"
+                        filterKey={"field"}
+                      ></TabComponent>
+                    </li>
+                    <li className="flex items-center gap-1">
+                      <span className="min-w-[5%]">距離：</span>
+                      <TabComponent
+                        tabs={[
+                          { value: "all", label: "全て" },
+                          ...[...new Set(races.map((race) => race.distance))]
+                            .filter((distance) => distance !== "")
+                            .map((distance) => ({ value: distance, label: distance })),
+                        ]}
+                        onTabChange={handleTabChange}
+                        size="sml"
+                        filterKey={"distance"}
+                      ></TabComponent>
+                    </li>
+                  </ul>
+                </div>
+              )}
 
               <div className="flex flex-col gap-4">
                 {races.length === 0 && <p className="text-center text-lg text-gray-800">予想がありません</p>}

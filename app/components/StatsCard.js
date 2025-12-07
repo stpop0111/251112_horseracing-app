@@ -1,4 +1,4 @@
-import ROCIcon from "./icons/ROCIcon";
+import { ROCIcon } from "./common/Icons";
 import { useState } from "react";
 
 export default function StatsCard({ title, stat, color, changeRate }) {

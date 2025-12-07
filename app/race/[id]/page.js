@@ -6,8 +6,7 @@ import Link from "next/link";
 import Button from "@/app/components/common/Button";
 import PageWrapper from "@/app/components/common/PageWrapper";
 import { TabComponent, Tab } from "@/app/components/common/TabComponent";
-import CheckIcon from "@/app/components/icons/CheckIcon";
-import CrossIcon from "@/app/components/icons/CrossIcon";
+import { CheckIcon, CrossIcon } from "@/app/components/common/Icons";
 import ChangeButton from "@/app/components/common/ChangeButton";
 
 export default function RacePage({ params }) {
@@ -22,7 +21,7 @@ export default function RacePage({ params }) {
 
   const [preMemo, setPreMemo] = useState(""); // 予想メモ
   const [recoMemo, setRecoMemo] = useState(""); // 反省メモ
-  const [hitStatus, setHitStatus] = useState(""); // 的中状況
+  const [hitStatus, setHitStatus] = useState("pending"); // 的中状況
 
   const param = use(params);
 
@@ -186,7 +185,6 @@ export default function RacePage({ params }) {
                 <div className="mb-2 flex items-center justify-between">
                   <h2 className="text-2xl">馬券内予想順位</h2>
                   {/* 的中状況 */}
-
                   <ChangeButton
                     buttons={[
                       {
@@ -209,7 +207,7 @@ export default function RacePage({ params }) {
                     ]}
                     onChange = {setHitStatus}
                     status = {hitStatus}
-                  ></ChangeButton>
+                  />
                 </div>
                 <ul className="flex gap-4">
                   <li>

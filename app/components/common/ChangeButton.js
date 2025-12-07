@@ -2,10 +2,15 @@ import { useEffect, use, useState, useRef } from "react";
 
 export default function ChangeButton({ buttons, defaultNumber = 0, onChange, status }) {
   // 1. 状態管理（今のインデックス）
-  const [activeIndex, setActiveIndex] = useState(buttons.findIndex((b) => b.value === status || defaultNumber));
+  const [activeIndex, setActiveIndex] = useState("defaultNumber");
+
+  useEffect(() => {
+    const currentIndex = buttons.findIndex((b) => b.value === status);
+    setActiveIndex(currentIndex >= 0 ? currentIndex : defaultNumber);
+  }, [status, buttons]);
 
   // 2. 現在のボタン情報を取得
-  const currentButton = buttons[activeIndex];
+  const currentButton = buttons[activeIndex] || buttons[defaultNumber];
 
   // 3. クリック時の処理
   const handleClick = (e) => {
@@ -28,7 +33,10 @@ export default function ChangeButton({ buttons, defaultNumber = 0, onChange, sta
 
   return (
     <button
-      onClick={handleClick}
+      onClick={(e) => {
+        e.preventDefault();
+        handleClick(e);
+      }}
       type="button"
       className={`aspect-square h-12 cursor-pointer rounded-lg p-2 ${currentButton.bg} text-${currentButton.color} ${animationStyle["strongEase"]}`}
     >
