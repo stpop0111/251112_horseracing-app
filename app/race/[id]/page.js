@@ -186,28 +186,6 @@ export default function RacePage({ params }) {
                 <div className="mb-2 flex items-center justify-between">
                   <h2 className="text-2xl">馬券内予想順位</h2>
                   {/* 的中状況 */}
-                  {/* <TabComponent
-                    tabs={[
-                      {
-                        label: <CheckIcon />,
-                        value: "hit",
-                        activeColor: "text-green-800",
-                        activeBg: "bg-green-200",
-                        style: "square"
-                      },
-                      { label: "未確定", value: "pending" },
-                      {
-                        label: <CrossIcon />,
-                        value: "miss",
-                        activeColor: "text-red-800",
-                        activeBg: "bg-red-200",
-                        style: "square"
-                      },
-                    ]}
-                    defaultNumber={1}
-                    tabStyle="pill"
-                    className="h-16"
-                  ></TabComponent> */}
 
                   <ChangeButton
                     buttons={[
@@ -229,6 +207,8 @@ export default function RacePage({ params }) {
                         bg: "bg-red-200",
                       },
                     ]}
+                    onChange = {setHitStatus}
+                    status = {hitStatus}
                   ></ChangeButton>
                 </div>
                 <ul className="flex gap-4">
