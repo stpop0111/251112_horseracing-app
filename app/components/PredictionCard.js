@@ -43,26 +43,30 @@ export default function PredictionCard({ race, isDeleting, isSelected, isChecked
       gsap.fromTo(
         checkBoxRef.current,
         {
+          rotate: 45,
           opacity: 0.5,
           scale: 0,
         },
         {
+          rotate: 0,
           opacity: 1,
           scale: 1,
-          duration: 0.8,
-          ease: "elastic.out(1,0.3)",
+          duration: 0.25,
+          ease: "power2.out",
         },
       );
     } else {
       gsap.fromTo(
         checkBoxRef.current,
         {
+          rotate: 0,
           scale: 1,
         },
         {
+          rotate: 45,
           scale: 0,
-          duration: 0.4,
-          ease: "power2.in",
+          duration: 0.25,
+          ease: "power2.out",
         },
       );
     }
@@ -77,7 +81,7 @@ export default function PredictionCard({ race, isDeleting, isSelected, isChecked
   return (
     <div key={race.id}>
       <div
-        className="relative rounded-xl border-3 border-gray-200 bg-gray-200/20 p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-green-300 hover:shadow-lg"
+        className="relative rounded-xl border-3 border-gray-200 bg-gray-200/20 p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-gray-400 hover:shadow-lg"
         ref={cardRef}
       >
         <div className="mb-4 space-y-2">
@@ -114,7 +118,7 @@ export default function PredictionCard({ race, isDeleting, isSelected, isChecked
                     color: "green-800",
                     bg: "bg-green-200",
                   },
-                  { label: "", value: "pending", color: "gray-800", bg: "bg-gray-100" },
+                  { label: "", value: "pending", color: "gray-800", bg: "bg-gray-300" },
                   {
                     label: <CrossIcon />,
                     value: "miss",
@@ -137,7 +141,7 @@ export default function PredictionCard({ race, isDeleting, isSelected, isChecked
               {isDeleting && (
                 <div
                   className={`aspect-square h-full max-w-8 min-w-4 rounded-full border-3 p-0.5 duration-400 ${
-                    isChecked ? "border-gray-400" : "border-gray-800"
+                    isChecked ? "border-red-800" : "border-gray-200"
                   }`}
                   onClick={(e) => {
                     isSelected();
@@ -146,7 +150,7 @@ export default function PredictionCard({ race, isDeleting, isSelected, isChecked
                   }}
                 >
                   <div
-                    className="flex h-full items-center justify-center rounded-full bg-blue-800 p-1 text-lg font-bold text-gray-100"
+                    className="flex h-full items-center justify-center rounded-full bg-red-800 p-1 text-lg font-bold text-red-200"
                     ref={checkBoxRef}
                     style={{ opacity: 0, transform: "scale(0)" }}
                   >

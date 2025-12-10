@@ -147,28 +147,8 @@ export default function Home() {
   ------------------------------------ */
   const [filtered, setFiltered] = useState(false);
 
-  const handleFilter = () => {
-    setFiltered(true);
-    if (!(filteredVenue || filteredField || filteredDistance)) {
-      setFiltered(false);
-      return;
-    } else {
-      const savedRaces = JSON.parse(localStorage.getItem("races")) || [];
-      setFilteredRaces(
-        savedRaces.filter(
-          (race) =>
-            (filteredVenue === "" || race.venue === filteredVenue) &&
-            (filteredField === "" || race.field === filteredField) &&
-            (filteredDistance === "" || race.distance === filteredDistance),
-        ),
-      );
-    }
-  };
-
-  /* ------------------------------------ 
-    絞り込み
-  ------------------------------------ */
   const handleTabChange = (tabValue, key) => {
+    setFiltered(true);
     // 絞り込み項目”全て”の場合は終了
     if (tabValue === "all") {
       const filteredValue = {
@@ -229,6 +209,15 @@ export default function Home() {
           (filteredValue.distance === "" || race.distance === filteredValue.distance),
       ),
     );
+  };
+
+  /* ------------------------------------ 
+    カード表示のアニメーション
+  ------------------------------------ */
+  const animateCards = () => {
+    // 1. 古いカードを取得
+    // 2. 古いカードを左にスライド + フェードアウト
+    // 3. 新しいカードを右からスライド + フェードイン（stagger）
   };
 
   return (
@@ -334,6 +323,7 @@ export default function Home() {
                 <div className="flex w-full items-center border-l-4 border-l-amber-200 p-4">
                   <h2 className="text-2xl font-bold">予想一覧</h2>
                 </div>
+                {/* 削除モード */}
                 {races.length !== 0 && isDeleting && (
                   <div className="flex w-full gap-4">
                     <Button
@@ -410,7 +400,7 @@ export default function Home() {
                 </div>
               )}
 
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-4" ref={cardContaierRef}>
                 {races.length === 0 && <p className="text-center text-lg text-gray-800">予想がありません</p>}
                 {/* 各カード */}
                 {filtered ? (

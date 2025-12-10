@@ -1,6 +1,9 @@
 import { useEffect, use, useState, useRef } from "react";
+import gsap from "gsap";
 
 export default function ChangeButton({ buttons, defaultNumber = 0, onChange, status }) {
+  const iconRef = useRef(null);
+
   // 1. 状態管理（今のインデックス）
   const [activeIndex, setActiveIndex] = useState("defaultNumber");
 
@@ -22,13 +25,27 @@ export default function ChangeButton({ buttons, defaultNumber = 0, onChange, sta
       newIndex = (activeIndex - 1 + buttons.length) % buttons.length;
     }
 
-    setActiveIndex(newIndex);
-    onChange && onChange(buttons[newIndex].value); // ← 新しいインデックスから value を取得！
-    console.log(buttons[newIndex].value);
+    const tl = gsap.timeline();
+
+    tl.to(iconRef.current, {
+      scale: 0,
+      rotate: 45,
+      duration: 0.25,
+      ease: "power2.out",
+      onComplete: () => {
+        setActiveIndex(newIndex);
+        onChange && onChange(buttons[newIndex].value);
+      },
+    }).to(iconRef.current, {
+      scale: 1,
+      rotate: 0,
+      duration: 0.25,
+      ease: "power2.out",
+    });
   };
 
   const animationStyle = {
-    strongEase: "transition-all duration-300 ease-[cubic-bezier(0,.70,.70,1)]",
+    strongEase: "transition-all duration-500 ease-[cubic-bezier(0,.70,.70,1)]",
   };
 
   return (
@@ -38,10 +55,10 @@ export default function ChangeButton({ buttons, defaultNumber = 0, onChange, sta
         handleClick(e);
       }}
       type="button"
-      className={`aspect-square h-12 cursor-pointer rounded-lg p-2 ${currentButton.bg} text-${currentButton.color} ${animationStyle["strongEase"]}`}
+      className={`aspect-square h-12 cursor-pointer rounded-lg p-2 hover:scale-110 ${currentButton.bg} text-${currentButton.color} ${animationStyle["strongEase"]}`}
     >
       <div className={`h-full w-full rounded-full border-2 p-2 border-color-${currentButton.color} ${animationStyle["strongEase"]}`}>
-        {currentButton.label}
+        <div ref={iconRef}>{currentButton.label}</div>
       </div>
     </button>
   );
