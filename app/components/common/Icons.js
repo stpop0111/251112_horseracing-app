@@ -9,7 +9,6 @@ export function CheckIcon({ fill = "currentColor" }) {
     >
       <g>
         <polygon
-          className="st0"
           points="440.469,73.413 218.357,295.525 71.531,148.709 0,220.229 146.826,367.055 218.357,438.587 289.878,367.055 512,144.945"
           style={{ fill: fill }}
         />
@@ -29,7 +28,6 @@ export function CrossIcon({ fill = "currentColor" }) {
     >
       <g>
         <polygon
-          className="st0"
           points="512,52.535 459.467,0.002 256.002,203.462 52.538,0.002 0,52.535 203.47,256.005 0,459.465 52.533,511.998 256.002,308.527 459.467,511.998 512,459.475 308.536,256.005 "
           style={{ fill: fill }}
         ></polygon>

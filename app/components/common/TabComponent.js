@@ -73,7 +73,7 @@ export function TabComponent({
         {tabs.map((tab) => (
       <button
         className={`relative z-10 inline-flex items-center justify-center font-bold ${animationStyle["strongEase"]}
-        ${ tab.value === activeTab ? tab.activeColor || "text-gray-900" : "text-gray-400" }
+        ${ tab.value === activeTab ? tab.activeColor || "text-gray-900 hover:text-gray-900" : "text-gray-400 hover:text-gray-600" }
         ${ tab.style === "square" ? "aspect-square" : "" }
         ${ btnStyle[size] }
         `}
@@ -90,7 +90,7 @@ export function TabComponent({
       </button>
         ))}
         <div
-          className={`bg-neutral-50 absolute z-5 shadow-lg transition-all duration-300 ease-[cubic-bezier(0,.70,.70,1)]
+          className={`bg-neutral-50 absolute z-5 shadow-lg ${animationStyle["strongEase"]}
             ${ tabStyle === "pill" ? "rounded-full" : "rounded-lg" }
             `}
           ref={activeElement}

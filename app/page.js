@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import gsap from "gsap";
 
 import PredictionsForm from "./components/PredictionsForm";
 import PredictionCard from "./components/PredictionCard";
@@ -214,11 +215,32 @@ export default function Home() {
   /* ------------------------------------ 
     カード表示のアニメーション
   ------------------------------------ */
-  const animateCards = () => {
-    // 1. 古いカードを取得
-    // 2. 古いカードを左にスライド + フェードアウト
-    // 3. 新しいカードを右からスライド + フェードイン（stagger）
-  };
+  const cardContainerRef = useRef(null); // ← スペル修正
+
+  useEffect(() => {
+    if (!cardContainerRef.current) return; // ← nullチェック
+
+    const cards = cardContainerRef.current.children; // ← 直下の子要素のみ
+
+    if (cards.length === 0) return; // ← カードがない場合は何もしない
+
+    gsap.fromTo(
+      cards,
+      {
+        x: "100%",
+        opacity: 0,
+        rotate: 15,
+      },
+      {
+        x: 0,
+        opacity: 1,
+        rotate: 0,
+        stagger: 0.2,
+        duration: 0.3,
+        ease: "power2.out", // ← より自然なイージング
+      },
+    );
+  }, [races, filtered]); // ← racesまたはfilteredが変わったら実行
 
   return (
     <PageWrapper>
@@ -262,58 +284,6 @@ export default function Home() {
               </ul>
             </div>
           </div>
-
-          {/* 入力フォーム
-          ------------------------------*/}
-          {isRegistering && (
-            <div className="fixed top-0 left-0 z-99 h-screen w-screen bg-black/50" onClick={() => setIsRegistering(!isRegistering)}>
-              <div className="flex h-full items-center justify-center">
-                <form
-                  onSubmit={handleSubmit}
-                  className="mb-6 rounded-xl border-2 border-gray-200 bg-gray-100 p-6 drop-shadow-lg"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <h2 className="mb-4 border-l-4 border-l-green-500 pl-2 text-2xl font-bold">登録フォーム</h2>
-                  {/* prettier-ignore */}
-                  <PredictionsForm 
-                  raceInfo={
-                    {
-                    raceName, setRaceName,
-                    raceRank, setRaceRank,
-                    venue, setVenue,
-                    raceNumber, setRaceNumber,
-                    field, setField,
-                    surface, setSurface,
-                    distance, setDistance,
-                    weather, setWeather,
-                    horseNumber, setHorseNumber,
-                    }}/>
-                  <div className="flex gap-2">
-                    <Button variant="green" size="sml" type="submit" onClick={handleSubmit}>
-                      登録
-                    </Button>
-                    <Button
-                      variant="gray"
-                      size="sml"
-                      onClick={() => {
-                        setRaceName("");
-                        setRaceRank("");
-                        setVenue("");
-                        setRaceNumber("");
-                        setField("");
-                        setSurface("");
-                        setDistance("");
-                        setWeather("");
-                        setHorseNumber("");
-                      }}
-                    >
-                      リセット
-                    </Button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
 
           {/* 予想一覧
           ------------------------------*/}
@@ -400,7 +370,7 @@ export default function Home() {
                 </div>
               )}
 
-              <div className="flex flex-col gap-4" ref={cardContaierRef}>
+              <div className="flex flex-col gap-4" ref={cardContainerRef}>
                 {races.length === 0 && <p className="text-center text-lg text-gray-800">予想がありません</p>}
                 {/* 各カード */}
                 {filtered ? (
@@ -459,6 +429,57 @@ export default function Home() {
           </div>
         </div>
       </div>
+      {/* 入力フォーム
+      ------------------------------*/}
+      {isRegistering && (
+        <div className="fixed top-0 left-0 z-99 h-screen w-screen bg-black/50" onClick={() => setIsRegistering(!isRegistering)}>
+          <div className="flex h-full items-center justify-center">
+            <form
+              onSubmit={handleSubmit}
+              className="mb-6 rounded-xl border-2 border-gray-200 bg-gray-100 p-6 drop-shadow-lg"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2 className="mb-4 border-l-4 border-l-green-500 pl-2 text-2xl font-bold">登録フォーム</h2>
+              {/* prettier-ignore */}
+              <PredictionsForm 
+              raceInfo={
+                {
+                raceName, setRaceName,
+                raceRank, setRaceRank,
+                venue, setVenue,
+                raceNumber, setRaceNumber,
+                field, setField,
+                surface, setSurface,
+                distance, setDistance,
+                weather, setWeather,
+                horseNumber, setHorseNumber,
+                }}/>
+              <div className="flex gap-2">
+                <Button variant="green" size="sml" type="submit" onClick={handleSubmit}>
+                  登録
+                </Button>
+                <Button
+                  variant="gray"
+                  size="sml"
+                  onClick={() => {
+                    setRaceName("");
+                    setRaceRank("");
+                    setVenue("");
+                    setRaceNumber("");
+                    setField("");
+                    setSurface("");
+                    setDistance("");
+                    setWeather("");
+                    setHorseNumber("");
+                  }}
+                >
+                  リセット
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </PageWrapper>
   );
 }
