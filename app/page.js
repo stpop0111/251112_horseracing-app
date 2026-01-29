@@ -39,7 +39,7 @@ export default function Home() {
   const [selectedRaces, setSelectedRaces] = useState([]); // 選択された予想
 
   /* ------------------------------------
-  初回ロード時にローカルストレージからデータを取得し、オブジェクトに格納
+    ---- 初回ロード時にローカルストレージからデータを取得し、オブジェクトに格納
   ------------------------------------ */
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem("races")); // ローカルストレージからキー名のデータを取得
@@ -56,7 +56,7 @@ export default function Home() {
   }, []);
 
   /* ------------------------------------
-    登録関数
+    ---- 登録関数
   ------------------------------------ */
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -84,14 +84,14 @@ export default function Home() {
       hitStatus: "pending", // 的中状況
     };
 
-    console.log(newRace);
-
-    // 新規レースの追加
+    /* ------------------------------------
+      ---- 新規レースの追加
+    ------------------------------------ */
     const updateRaces = [...savedRaces, newRace]; // スプレッド構文で新規レースを既存レースに上書き
     localStorage.setItem("races", JSON.stringify(updateRaces)); // ローカルストレージに上書きした配列を保存
     setRaces(updateRaces); // 状態関数にも保存
 
-    alert("予想を編集しました"); // TODO:モーダル表示にしてデザイン性を高める
+    alert("予想を編集しました");
 
     // フォームのリセット
     setRaceName("");
@@ -107,11 +107,11 @@ export default function Home() {
   };
 
   /* ------------------------------------
-    削除関数
+    ---- 削除関数
   ------------------------------------ */
   const handleDelete = (selectedRaces) => {
     // パラメーターにidを使用
-    if (!confirm("削除しますか？")) return; // TODO:モーダル表示にしてデザイン性を高める
+    if (!confirm("削除しますか？")) return;
 
     // 保存されているレースを取得
     const savedRaces = JSON.parse(localStorage.getItem("races"));
@@ -128,8 +128,8 @@ export default function Home() {
     console.log("削除しました"); // TODO:モーダル表示にしてデザイン性を高める
   };
 
-  /* ------------------------------------ 
-    ID生成
+  /* ------------------------------------
+    ---- ID生成
   ------------------------------------ */
   const generateID = (dateSep = "", timeSep = "", sep = "") => {
     const now = new Date();
@@ -143,8 +143,8 @@ export default function Home() {
     return `${year}${dateSep}${month}${dateSep}${day}${sep}${hours}${timeSep}${mins}${timeSep}${secs}`;
   };
 
-  /* ------------------------------------ 
-    絞り込み
+  /* ------------------------------------
+    ---- 絞り込み
   ------------------------------------ */
   const [filtered, setFiltered] = useState(false);
 
@@ -153,7 +153,7 @@ export default function Home() {
     // 絞り込み項目”全て”の場合は終了
     if (tabValue === "all") {
       const filteredValue = {
-        venue: key === "venue" ? "" : filteredVenue, // ← "all" なら空文字
+        venue: key === "venue" ? "" : filteredVenue,
         field: key === "field" ? "" : filteredField,
         distance: key === "distance" ? "" : filteredDistance,
       };
@@ -172,14 +172,7 @@ export default function Home() {
         return;
       }
 
-      setFilteredRaces(
-        races.filter(
-          (race) =>
-            (filteredValue.venue === "" || race.venue === filteredValue.venue) &&
-            (filteredValue.field === "" || race.field === filteredValue.field) &&
-            (filteredValue.distance === "" || race.distance === filteredValue.distance),
-        ),
-      );
+      setFilteredRaces( races.filter( (race) => (filteredValue.venue === "" || race.venue === filteredValue.venue) && (filteredValue.field === "" || race.field === filteredValue.field) && (filteredValue.distance === "" || race.distance === filteredValue.distance), ), );
       return;
     }
 
@@ -211,36 +204,6 @@ export default function Home() {
       ),
     );
   };
-
-  /* ------------------------------------ 
-    カード表示のアニメーション
-  ------------------------------------ */
-  const cardContainerRef = useRef(null); // ← スペル修正
-
-  useEffect(() => {
-    if (!cardContainerRef.current) return; // ← nullチェック
-
-    const cards = cardContainerRef.current.children; // ← 直下の子要素のみ
-
-    if (cards.length === 0) return; // ← カードがない場合は何もしない
-
-    gsap.fromTo(
-      cards,
-      {
-        x: "100%",
-        opacity: 0,
-        rotate: 15,
-      },
-      {
-        x: 0,
-        opacity: 1,
-        rotate: 0,
-        stagger: 0.2,
-        duration: 0.3,
-        ease: "power2.out", // ← より自然なイージング
-      },
-    );
-  }, [races, filtered]); // ← racesまたはfilteredが変わったら実行
 
   return (
     <PageWrapper>
@@ -370,7 +333,7 @@ export default function Home() {
                 </div>
               )}
 
-              <div className="flex flex-col gap-4" ref={cardContainerRef}>
+              <div className="flex flex-col gap-4">
                 {races.length === 0 && <p className="text-center text-lg text-gray-800">予想がありません</p>}
                 {/* 各カード */}
                 {filtered ? (

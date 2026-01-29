@@ -3,40 +3,14 @@
 import PredictionsForm from "./PredictionsForm";
 import Button from "./common/Button";
 import { TabComponent, Tab } from "./common/TabComponent";
-import ChangeButton from "@/app/components/common/ChangeButton";
 import { CheckIcon, CrossIcon } from "./common/Icons";
+import Accordion from "./common/Accordion";
+import ChangeButton from "@/app/components/common/ChangeButton";
 
 import gsap from "gsap";
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 
 export default function PredictionCard({ race, isDeleting, isSelected, isChecked }) {
-  /* ------------------------------------
-    カード追加時のアニメーション
-  ------------------------------------ */
-  const cardRef = useRef(null);
-  const hasAnimated = useRef(false); // アニメーション実行済みフラグ
-
-  useEffect(() => {
-    if (race.isNew && !hasAnimated.current) {
-      gsap.fromTo(
-        cardRef.current,
-        {
-          x: -100,
-        },
-        {
-          x: 0,
-          duration: 1.6,
-          ease: "elastic.out(1,0.3)",
-        },
-      );
-      hasAnimated.current = true; // 実行済みにマーク
-    }
-  }, [race.isNew]);
-
-  /* ------------------------------------
-    カード登場のアニメーション
-  ------------------------------------ */
-
   /* ------------------------------------
     チェックボックスのアニメーション
   ------------------------------------ */
@@ -46,32 +20,14 @@ export default function PredictionCard({ race, isDeleting, isSelected, isChecked
     if (isChecked) {
       gsap.fromTo(
         checkBoxRef.current,
-        {
-          rotate: 45,
-          opacity: 0.5,
-          scale: 0,
-        },
-        {
-          rotate: 0,
-          opacity: 1,
-          scale: 1,
-          duration: 0.25,
-          ease: "power2.out",
-        },
+        { rotate: 45, opacity: 0.5, scale: 0, },
+        { rotate: 0, opacity: 1, scale: 1, duration: 0.25, ease: "power2.out", },
       );
     } else {
       gsap.fromTo(
         checkBoxRef.current,
-        {
-          rotate: 0,
-          scale: 1,
-        },
-        {
-          rotate: 45,
-          scale: 0,
-          duration: 0.25,
-          ease: "power2.out",
-        },
+        { rotate: 0, scale: 1, },
+        { rotate: 45, scale: 0, duration: 0.25, ease: "power2.out", },
       );
     }
   }, [isChecked]);
@@ -82,58 +38,9 @@ export default function PredictionCard({ race, isDeleting, isSelected, isChecked
     { rank: "3着", data: race.predictions.third },
   ];
 
-  /* ------------------------------------
-    アコーディオンの開閉
-  ------------------------------------ */
-  const [accordionToggle, setAccordionToggle] = useState(false);
-
-  const toggleAccordion = (e) => {
-    const toggle = e.currentTarget;
-    const targetContainer = toggle.nextElementSibling;
-    const arrow = toggle.querySelector("span");
-
-    if (targetContainer.clientHeight === 0) {
-      setAccordionToggle(!accordionToggle);
-      const containerHeight = targetContainer.scrollHeight;
-      gsap.fromTo(
-        targetContainer,
-        {
-          height: 0,
-          opacity: 0,
-        },
-        {
-          height: containerHeight,
-          opacity: 1,
-          duration: 0.3,
-          ease: "power2.in",
-        },
-      );
-      gsap.to(arrow, {
-        rotate: 45,
-        duration: 0.3,
-        ease: "power2.in",
-      });
-    } else {
-      setAccordionToggle(!accordionToggle);
-      gsap.to(targetContainer, {
-        height: 0,
-        opacity: 0,
-        duration: 0.3,
-        ease: "power2.in",
-      });
-
-      gsap.to(arrow, {
-        rotate: -45,
-        duration: 0.3,
-        ease: "power2.in",
-      });
-    }
-  };
-
   return (
     <div
       className="rounded-xl border-3 border-gray-200 bg-gray-200/20 p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-gray-400 hover:shadow-lg"
-      ref={cardRef}
       key={race.id}
     >
       <div className="mb-4 space-y-2">
@@ -164,26 +71,16 @@ export default function PredictionCard({ race, isDeleting, isSelected, isChecked
           <div className="flex items-center gap-2">
             <ChangeButton
               buttons={[
-                {
-                  label: <CheckIcon />,
-                  value: "hit",
-                  color: "green-800",
-                  bg: "bg-green-200",
-                },
+                { label: <CheckIcon />, value: "hit", color: "green-800", bg: "bg-green-200", },
                 { label: "", value: "pending", color: "gray-800", bg: "bg-gray-300" },
-                {
-                  label: <CrossIcon />,
-                  value: "miss",
-                  color: "red-800",
-                  bg: "bg-red-200",
-                },
+                { label: <CrossIcon />, value: "miss", color: "red-800", bg: "bg-red-200", },
               ]}
               onChange={(value) => {
                 const saved = JSON.parse(localStorage.getItem("races"));
                 const index = saved.findIndex((r) => r.id === race.id);
                 saved[index] = {
                   ...saved[index],
-                  hitStatus: value, // ← このキーだけ更新
+                  hitStatus: value,
                 };
                 localStorage.setItem("races", JSON.stringify(saved));
               }}
@@ -236,52 +133,39 @@ export default function PredictionCard({ race, isDeleting, isSelected, isChecked
       <div className="mb-4">
         {(race.preMemo || race.recoMemo) && (
           <>
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                toggleAccordion(e);
-              }}
-              className={`mb-2 inline-flex items-center gap-5 rounded-lg border-2 border-gray-200 px-4 py-2 transition-all duration-200 hover:bg-gray-300
-                ${accordionToggle ? "bg-gray-800 text-gray-200 hover:bg-gray-600" : "bg-gray-200 text-gray-900"}`}
-            >
-              予想を開く
-              <span
-                className={`relative block aspect-square h-3 -rotate-45 border-r-2 border-b-2 ${accordionToggle ? "-top-0.5 border-gray-200" : "border-gray-800"}`}
-              ></span>
-            </button>
-            <div style={{ height: 0 }} className="overflow-hidden">
-              <TabComponent
-                tabs={[
-                  { label: "予想メモ", value: "preMemo" },
-                  { label: "回顧メモ", value: "recoMemo" },
-                ]}
-              >
-                <Tab tabValue={"preMemo"}>
-                  {race.preMemo ? (
-                    <>
-                      <p className="mb-2 text-lg font-semibold">予想メモ</p>
-                      <p className="rounded-lg border p-2">{race.preMemo}</p>
-                    </>
-                  ) : (
-                    <>
-                      <p>メモがありません</p>
-                    </>
-                  )}
-                </Tab>
-                <Tab tabValue={"recoMemo"}>
-                  {race.recoMemo ? (
-                    <>
-                      <p className="mb-2 text-lg font-semibold">回顧メモ</p>
-                      <p className="rounded-lg border p-2">{race.recoMemo}</p>
-                    </>
-                  ) : (
-                    <>
-                      <p>メモがありません</p>
-                    </>
-                  )}
-                </Tab>
-              </TabComponent>
-            </div>
+            <Accordion title="予想を開く">
+              <div>
+                <TabComponent
+                  tabs={[
+                    { label: "予想メモ", value: "preMemo" },
+                    { label: "回顧メモ", value: "recoMemo" },
+                  ]}
+                >
+                  <Tab tabValue={"preMemo"}>
+                    {race.preMemo ? (
+                      <>
+                        <p className="mb-2 text-lg font-semibold">予想メモ</p>
+                        <p className="rounded-lg border p-2">{race.preMemo}</p>
+                      </>
+                    ) : (
+                      <><p>メモがありません</p></>
+                    )}
+                  </Tab>
+                  <Tab tabValue={"recoMemo"}>
+                    {race.recoMemo ? (
+                      <>
+                        <p className="mb-2 text-lg font-semibold">回顧メモ</p>
+                        <p className="rounded-lg border p-2">{race.recoMemo}</p>
+                      </>
+                    ) : (
+                      <>
+                        <p>メモがありません</p>
+                      </>
+                    )}
+                  </Tab>
+                </TabComponent>
+              </div>
+            </Accordion>
           </>
         )}
       </div>
